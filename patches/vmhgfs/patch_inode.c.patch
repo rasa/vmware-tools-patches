@@ -1,0 +1,27 @@
+--- ./inode.c  2012-10-31 16:58:29.000000000 -0700
++++ ./inode.c	2013-05-18 07:41:21.991828238 -0700
+@@ -1798,6 +1798,15 @@
+  *
+  *----------------------------------------------------------------------
+  */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 9, 0)
++// jay.finger: starting in 3.9 `hlist_for_each_entry' takes 3 args instead of 4.
++#define hgfs_hlist_for_each_entry(tpos, pos, head, member)               \
++    pos = NULL; hlist_for_each_entry(tpos, head, member)
++#else
++#define hgfs_hlist_for_each_entry(tpos, pos, head, member)               \
++    hlist_for_each_entry(tpos, head, member)
++#endif
++
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 6, 0)
+ static int
+ HgfsPermission(struct inode *inode,
+@@ -1818,7 +1827,7 @@
+          return -ECHILD;
+ 
+       /* Find a dentry with valid d_count. Refer bug 587879. */
+-      hlist_for_each_entry(dentry, p, &inode->i_dentry, d_alias) {
++      hgfs_hlist_for_each_entry(dentry, p, &inode->i_dentry, d_alias) {
+          dcount = dentry->d_count;
+          if (dcount) {
+             LOG(4, ("Found %s %d \n", dentry->d_name.name, dcount));

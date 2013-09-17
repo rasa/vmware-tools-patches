@@ -1,0 +1,10 @@
+*.bak
+*.orig
+*.rej
+*.swp
+*.~*
+*~
+.DS_Store*
+nohup.out
+VMwareTools-*.tar.gz
+vmware-tools-distrib/
