@@ -48,7 +48,7 @@ pushd vmware-tools-distrib >/dev/null
 
 	$SCRIPT_DIR/patch-modules.sh
 
-	sudo ./vmware-install.pl -d --clobber-kernel-modules=vmci,vmxnet3,pvscsi,vmmemctl,vsock,vmhgfs,vmxnet
+	sudo ./vmware-install.pl -d --clobber-kernel-modules=pvscsi,vmblock,vmci,vmhgfs,vmmemctl,vmsync,vmxnet,vmxnet3,vsock
 
 popd >/dev/null
 

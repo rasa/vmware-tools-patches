@@ -22,7 +22,7 @@ then
 	exit 3
 fi
 
-PATCHES=$(find $patchdir -type f -size +1 -regextype posix-extended -iregex '.*(patch|diff)')
+PATCHES=$(find $patchdir -type f -size +1 -regextype posix-extended -iregex '.*\.(patch|diff)')
 
 if [ -z "$PATCHES" ]
 then
