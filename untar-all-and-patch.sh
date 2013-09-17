@@ -2,8 +2,6 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-PATH=$SCRIPT_DIR:$PATH
-
 dir="${1:-$(pwd)}"
 
 TOOLS=$(find "$dir" -type f -name 'VMwareTools-*.tar.gz' | sort -r)
@@ -16,5 +14,5 @@ fi
 
 for tool in $TOOLS
 do
-	test-tool.sh $tool
+	$SCRIPT_DIR/untar-and-patch.sh $tool
 done
