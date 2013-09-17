@@ -41,7 +41,7 @@ pushd lib/modules/source >/dev/null
 
 	rm -rf $module-only
 
-	tar -xf --no-same-owner --no-same-permissions $module.tar
+	tar --no-same-owner --no-same-permissions -xf $module.tar
 
 	chmod -R a+w $module-only
 
@@ -58,7 +58,7 @@ pushd lib/modules/source >/dev/null
 
 	popd >/dev/null
 
-	tar cf $module.tar $module-only
+	tar -cf $module.tar $module-only
 
 #	rm -rf $module-only
 
