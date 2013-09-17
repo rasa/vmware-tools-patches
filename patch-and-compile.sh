@@ -16,6 +16,11 @@ then
 	exit 2
 fi
 
+if "$(command -v vmware-uninstall-tools.pl)"
+then
+	sudo vmware-uninstall-tools.pl
+fi
+
 rm -fr vmware-tools-distrib
 
 echo -e "=== Patching $tool ...\n"
