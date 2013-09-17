@@ -26,6 +26,8 @@ pushd vmware-tools-distrib >/dev/null
 
 	$SCRIPT_DIR/vmware-tools-patch-modules.sh
 
+	sudo ./vmware-install.pl -d --clobber-kernel-modules=vmci,vmxnet3,pvscsi,vmmemctl,vsock,vmhgfs,vmxnet
+
 popd >/dev/null
 
 test "$DONT_CLEAN" ||

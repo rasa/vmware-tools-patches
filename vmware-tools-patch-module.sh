@@ -60,6 +60,7 @@ pushd lib/modules/source >/dev/null
 
 	tar -cf $module.tar $module-only
 
-#	rm -rf $module-only
+	test "$DONT_CLEAN" ||
+		rm -rf $module-only
 
 popd >/dev/null
