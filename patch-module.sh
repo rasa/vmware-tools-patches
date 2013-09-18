@@ -2,7 +2,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [ -z "$(command -v patch >/dev/null)" ]
+if ! command -v patch >/dev/null 2>&1
 then
 	echo $0: Command not found: patch >&2
 	exit 1
