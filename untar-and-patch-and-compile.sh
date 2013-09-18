@@ -27,7 +27,7 @@ then
 	exit 2
 fi
 
-if "$(command -v vmware-uninstall-tools.pl)"
+if command -v vmware-uninstall-tools.pl >dev/null 2>&1
 then
 	sudo vmware-uninstall-tools.pl
 fi
