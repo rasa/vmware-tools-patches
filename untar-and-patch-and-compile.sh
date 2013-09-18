@@ -52,7 +52,7 @@ fi
 
 if command -v apt-get >/dev/null 2>&1
 then
-	apt-get install -y linux-headers-$(uname -r) build-essential dkms psmisc
+	sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms psmisc
 fi
 
 pushd vmware-tools-distrib >/dev/null
