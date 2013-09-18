@@ -4,7 +4,7 @@
  #include <linux/namei.h>
  #endif
  #include <linux/highmem.h>
-+#if LINUX_VERSION_CODE > KERNEL_VERSION(3, 11, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 11, 0)
 +#include <linux/dcache.h>
 +#endif
 
