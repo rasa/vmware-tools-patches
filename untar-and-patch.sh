@@ -27,6 +27,12 @@ then
 	exit 2
 fi
 
+export VMWARE_TOOLS_VER=$(echo $tool | cut -d'-' -f 2)
+
+export VMWARE_TOOLS_MAJ_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 1)
+export VMWARE_TOOLS_MIN_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 2)
+export VMWARE_TOOLS_REV_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 3)
+
 rm -fr vmware-tools-distrib
 
 echo -e "=== Patching $tool ...\n"

@@ -27,10 +27,11 @@ then
 	exit 2
 fi
 
-if command -v vmware-uninstall-tools.pl >/dev/null 2>&1
-then
-	sudo vmware-uninstall-tools.pl
-fi
+export VMWARE_TOOLS_VER=$(echo $tool | cut -d'-' -f 2)
+
+export VMWARE_TOOLS_MAJ_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 1)
+export VMWARE_TOOLS_MIN_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 2)
+export VMWARE_TOOLS_REV_VER=$(echo $VMWARE_TOOLS_VER | cut -d'.' -f 3)
 
 rm -fr vmware-tools-distrib
 
@@ -44,10 +45,14 @@ then
 	exit 3
 fi
 
-if [ ! -f vmware-tools-distrib/vmware-install.pl ]
+if command -v vmware-uninstall-tools.pl >/dev/null 2>&1
 then
-	echo $0: Error: File not found: vmware-tools-distrib/vmware-install.pl >&2
-	exit 4
+	sudo vmware-uninstall-tools.pl
+fi
+
+if command -v apt-get >/dev/null 2>&1
+then
+	apt-get install -y linux-headers-$(uname -r) build-essential dkms psmisc
 fi
 
 pushd vmware-tools-distrib >/dev/null
