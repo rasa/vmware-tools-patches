@@ -34,3 +34,12 @@ $ cp VMwareTools-9.6.0-1294478.tar.gz vmware-tools-patches/
 $ cd vmware-tools-patches
 $ ./untar-and-patch-and-compile.sh
 </pre>
+
+If `apt-get` is installed on your system, the following packages will be installed prior to compliation:
+
+1. linux-headers-$(uname -r)
+2. build-essential
+3. dkms
+4. psmis
+
+If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
