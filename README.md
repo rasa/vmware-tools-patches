@@ -14,13 +14,13 @@ To run:
 <pre>
 $ git clone https://github.com/rasa/vmware-tools-patches.git
 </pre>
-2. Copy your patch(es) into the appropriate directory in the `patches` directory. This step is optional. For example:
+2. Copy your patch(es) into the appropriate directory in the `patches` directory. The file must end in `.patch`, or `.diff`. This step is optional. For example:
 <pre>
 $ cp great-new.patch vmware-tools-patches/patches/vmhgfs
 </pre>
 3. Copy a `VMwareTools-*.tar.gz` into the `vmware-tools-patches` folder:
 <pre>
-$ cp VMwareTools-9.6.0-1294478.tar.gz vmware-tools-patches/
+$ cp VMwareTools-*.tar.gz vmware-tools-patches/
 </pre>
 4. Apply the patches, and then run the `vmware-install.pl` installer:
 <pre>
