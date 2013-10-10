@@ -11,25 +11,18 @@ It has been tested with the following files:
 To run:
 
 1. Checkout the repository:
-
 <pre>
 $ git clone https://github.com/rasa/vmware-tools-patches.git
 </pre>
-
 2. Copy your patch(es) into the appropriate directory in the `patches` directory. This step is optional. For example:
-
 <pre>
 $ cp great-new.patch vmware-tools-patches/patches/vmhgfs
 </pre>
-
 3. Copy a `VMwareTools-*.tar.gz` into the `vmware-tools-patches` folder:
-
 <pre>
 $ cp VMwareTools-9.6.0-1294478.tar.gz vmware-tools-patches/
 </pre>
-
 4. Apply the patches, and then run the `vmware-install.pl` installer:
-
 <pre>
 $ cd vmware-tools-patches
 $ ./untar-and-patch-and-compile.sh
@@ -37,9 +30,9 @@ $ ./untar-and-patch-and-compile.sh
 
 If `apt-get` is installed on your system, the following packages will be installed prior to compliation:
 
-1. linux-headers-$(uname -r)
-2. build-essential
-3. dkms
-4. psmis
+* linux-headers-$(uname -r)
+* build-essential
+* dkms
+* psmisc
 
 If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
