@@ -1,24 +1,23 @@
 #!/usr/bin/env bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# untar all VMwareTools-*.tar.gz files found, and apply patches for all modules for each one
 
-if ! command -v patch >/dev/null 2>&1
-then
-	echo $0: Command not found: patch >&2
-	exit 1
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if ! hash patch >/dev/null 2>&1; then
+  echo $0: Command not found: patch >&2
+  exit 1
 fi
 
 dir="${1:-$(pwd)}"
 
-TOOLS=$(find "$dir" -type f -name 'VMwareTools-*.tar.gz' | sort -r)
+tools="$(find "${dir}" -type f -name 'VMwareTools-*.tar.gz' | sort -r)"
 
-if [ -z "$TOOLS" ]
-then
-	echo "$0: No files matching VMwareTools-*.tar.gz found in '$dir'" >&2
-	exit 1
+if [[ -z "${tools}" ]]; then
+  echo "$0: No files matching VMwareTools-*.tar.gz found in '${dir}'" >&2
+  exit 1
 fi
 
-for tool in $TOOLS
-do
-	$SCRIPT_DIR/untar-and-patch.sh $tool
+for tool in ${tools}; do
+  "${SCRIPT_DIR}/untar-and-patch.sh" "${tool}"
 done
