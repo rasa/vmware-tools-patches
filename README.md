@@ -28,7 +28,7 @@ $ cd vmware-tools-patches
 $ ./untar-and-patch-and-compile.sh
 </pre>
 
-If `apt-get` is installed on your system, the following packages will be installed prior to compliation:
+If `apt-get` is installed on your system, the following packages will be installed prior to compilation:
 
 * linux-headers-$(uname -r)
 * build-essential
