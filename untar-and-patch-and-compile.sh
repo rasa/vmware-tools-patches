@@ -47,6 +47,6 @@ pushd vmware-tools-distrib >/dev/null
 
 popd >/dev/null
 
-if [[ -z "$DONT_CLEAN" ]]; then
+if [[ -z "${VMWARE_TOOLS_PATCHES_DEBUG}" ]]; then
   rm -fr vmware-tools-distrib
 fi

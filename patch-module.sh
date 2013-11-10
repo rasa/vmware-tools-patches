@@ -75,7 +75,7 @@ pushd lib/modules/source >/dev/null
 
   tar -cf "${module}.tar" "${module}-only"
 
-  if [[ -z "${DONT_CLEAN}" ]]; then
+  if [[ -z "${VMWARE_TOOLS_PATCHES_DEBUG}" ]]; then
     rm -rf "${module}-only"
   fi
 
