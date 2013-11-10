@@ -4,11 +4,6 @@
 
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if ! hash patch >/dev/null 2>&1; then
-  echo $0: Command not found: patch >&2
-  exit 1
-fi
-
 tool="$1"
 
 if [[ -z "${tool}" ]]; then
@@ -41,7 +36,7 @@ if hash vmware-uninstall-tools.pl >/dev/null 2>&1; then
 fi
 
 if hash apt-get >/dev/null 2>&1; then
-  sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms psmisc
+  sudo apt-get install -y linux-headers-$(uname -r) build-essential dkms psmisc patch
 fi
 
 pushd vmware-tools-distrib >/dev/null
