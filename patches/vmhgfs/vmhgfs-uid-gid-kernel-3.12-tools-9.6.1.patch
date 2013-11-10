@@ -1,0 +1,150 @@
+diff -ur vmhgfs-only.orig/file.c vmhgfs-only/file.c
+--- vmhgfs-only.orig/file.c	2013-10-08 22:30:40.000000000 -0700
++++ vmhgfs-only/file.c	2013-11-10 12:17:24.210657677 -0800
+@@ -682,7 +682,7 @@
+             iparent = dparent->d_inode;
+
+             HgfsSetUidGid(iparent, file->f_dentry,
+-                          current_fsuid(), current_fsgid());
++                          CURRENT_FSUID(), CURRENT_FSGID());
+
+             dput(dparent);
+          }
+diff -ur vmhgfs-only.orig/filesystem.c vmhgfs-only/filesystem.c
+--- vmhgfs-only.orig/filesystem.c	2013-10-08 22:30:40.000000000 -0700
++++ vmhgfs-only/filesystem.c	2013-11-10 12:20:56.899815775 -0800
+@@ -231,13 +231,13 @@
+    if (si->uidSet) {
+       si->uid = mountInfo->uid;
+    } else {
+-      si->uid = current_uid();
++      si->uid = CURRENT_UID();
+    }
+    si->gidSet = mountInfo->gidSet;
+    if (si->gidSet) {
+       si->gid = mountInfo->gid;
+    } else {
+-      si->gid = current_gid();
++      si->gid = CURRENT_GID();
+    }
+    si->fmask = mountInfo->fmask;
+    si->dmask = mountInfo->dmask;
+diff -ur vmhgfs-only.orig/fsutil.c vmhgfs-only/fsutil.c
+--- vmhgfs-only.orig/fsutil.c	2013-10-08 22:30:40.000000000 -0700
++++ vmhgfs-only/fsutil.c	2013-11-10 12:34:54.635734349 -0800
+@@ -31,6 +31,7 @@
+ /* Must come before compat_dcache. */
+ #include "compat_fs.h"
+
++#include "compat_cred.h"
+ #include "compat_dcache.h"
+ #include "compat_kernel.h"
+ #include "compat_sched.h"
+@@ -677,14 +678,14 @@
+     * the server didn't give us a uid or gid.
+     */
+    if (si->uidSet || (attr->mask & HGFS_ATTR_VALID_USERID) == 0) {
+-      inode->i_uid = si->uid;
++      KUID2UID(inode->i_uid) = si->uid;
+    } else {
+-      inode->i_uid = attr->userId;
++      KUID2UID(inode->i_uid) = attr->userId;
+    }
+    if (si->gidSet || (attr->mask & HGFS_ATTR_VALID_GROUPID) == 0) {
+-      inode->i_gid = si->gid;
++      KGID2GID(inode->i_gid) = si->gid;
+    } else {
+-      inode->i_gid = attr->groupId;
++      KGID2GID(inode->i_gid) = attr->groupId;
+    }
+
+    inode->i_rdev = 0;  /* Device nodes are not supported */
+@@ -1660,7 +1661,7 @@
+    struct iattr setUidGid;
+
+    setUidGid.ia_valid = ATTR_UID;
+-   setUidGid.ia_uid = uid;
++   KUID2UID(setUidGid.ia_uid) = uid;
+
+    /*
+     * Only set the gid if the host file system wouldn't have for us.  See the
+@@ -1668,7 +1669,7 @@
+     */
+    if (!parent || !(parent->i_mode & S_ISGID)) {
+       setUidGid.ia_valid |= ATTR_GID;
+-      setUidGid.ia_gid = gid;
++      KGID2GID(setUidGid.ia_gid) = gid;
+    }
+
+    /*
+diff -ur vmhgfs-only.orig/inode.c vmhgfs-only/inode.c
+--- vmhgfs-only.orig/inode.c	2013-11-10 11:33:05.005599552 -0800
++++ vmhgfs-only/inode.c	2013-11-10 12:36:32.792707716 -0800
+@@ -517,13 +517,13 @@
+
+       if (valid & ATTR_UID) {
+          attrV2->mask |= HGFS_ATTR_VALID_USERID;
+-         attrV2->userId = iattr->ia_uid;
++         attrV2->userId = KUID2UID(iattr->ia_uid);
+          *changed = TRUE;
+       }
+
+       if (valid & ATTR_GID) {
+          attrV2->mask |= HGFS_ATTR_VALID_GROUPID;
+-         attrV2->groupId = iattr->ia_gid;
++         attrV2->groupId = KGID2GID(iattr->ia_gid);
+          *changed = TRUE;
+       }
+
+@@ -620,13 +620,13 @@
+
+       if (valid & ATTR_UID) {
+          attrV2->mask |= HGFS_ATTR_VALID_USERID;
+-         attrV2->userId = iattr->ia_uid;
++         attrV2->userId = KUID2UID(iattr->ia_uid);
+          *changed = TRUE;
+       }
+
+       if (valid & ATTR_GID) {
+          attrV2->mask |= HGFS_ATTR_VALID_GROUPID;
+-         attrV2->groupId = iattr->ia_gid;
++         attrV2->groupId = KGID2GID(iattr->ia_gid);
+          *changed = TRUE;
+       }
+
+@@ -1219,7 +1219,7 @@
+              * a Linux machine and as root, but we might as well give it
+              * a go.
+              */
+-            HgfsSetUidGid(dir, dentry, current_fsuid(), current_fsgid());
++            HgfsSetUidGid(dir, dentry, CURRENT_FSUID(), CURRENT_FSGID());
+          }
+
+          /*
+diff -ur vmhgfs-only.orig/shared/compat_cred.h vmhgfs-only/shared/compat_cred.h
+--- vmhgfs-only.orig/shared/compat_cred.h	2013-11-10 12:04:24.856520211 -0800
++++ vmhgfs-only/shared/compat_cred.h	2013-11-10 12:34:26.813424649 -0800
+@@ -35,6 +35,22 @@
+ #define current_fsgid() (current->fsgid)
+ #endif
+
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 12, 0)
++#define CURRENT_FSUID() (__kuid_val(current_fsuid()))
++#define CURRENT_FSGID() (__kgid_val(current_fsgid()))
++#define CURRENT_UID() (__kuid_val(current_uid()))
++#define CURRENT_GID() (__kgid_val(current_gid()))
++#define KUID2UID(kuid) (kuid.val)
++#define KGID2GID(kgid) (kgid.val)
++#else
++#define CURRENT_FSUID() (current_fsuid())
++#define CURRENT_FSGID() (current_fsgid())
++#define CURRENT_UID() (current_uid())
++#define CURRENT_GID() (current_gid())
++#define KUID2UID(kuid) (kuid)
++#define KGID2GID(kgid) (kgid)
++#endif
++
+ #if !defined(cap_set_full)
+ /* cap_set_full was removed in kernel version 3.0-rc4. */
+ #define cap_set_full(_c) do { (_c) = CAP_FULL_SET; } while (0)
+Binary files source/vmhgfs.tar and source.patched/vmhgfs.tar differ
