@@ -1,0 +1,72 @@
+diff -Naur a/linux/control.c b/linux/control.c
+--- a/linux/control.c	2013-10-03 04:29:47.471339204 -0400
++++ b/linux/control.c	2013-10-03 04:31:56.607334636 -0400
+@@ -283,7 +283,7 @@
+    int i;
+    int retval;
+
+-   name = getname(buf);
++   name = (char*)getname(buf)->name;
+    if (IS_ERR(name)) {
+       return PTR_ERR(name);
+    }
+diff -Naur a/linux/dentry.c b/linux/dentry.c
+--- a/linux/dentry.c	2013-10-03 04:29:47.471339204 -0400
++++ b/linux/dentry.c	2013-10-03 04:31:56.607334636 -0400
+@@ -32,7 +32,7 @@
+ #include "block.h"
+
+
+-static int DentryOpRevalidate(struct dentry *dentry, struct nameidata *nd);
++static int DentryOpRevalidate(struct dentry *dentry, unsigned int flags);
+
+ struct dentry_operations LinkDentryOps = {
+    .d_revalidate = DentryOpRevalidate,
+@@ -60,7 +60,7 @@
+
+ static int
+ DentryOpRevalidate(struct dentry *dentry,  // IN: dentry revalidating
+-                   struct nameidata *nd)   // IN: lookup flags & intent
++                   unsigned int flags)     // IN: lookup flags & intent
+ {
+    VMBlockInodeInfo *iinfo;
+    struct nameidata actualNd;
+@@ -101,7 +101,7 @@
+    if (actualDentry &&
+        actualDentry->d_op &&
+        actualDentry->d_op->d_revalidate) {
+-      return actualDentry->d_op->d_revalidate(actualDentry, nd);
++      return actualDentry->d_op->d_revalidate(actualDentry, flags);
+    }
+
+    if (compat_path_lookup(iinfo->name, 0, &actualNd)) {
+diff -Naur a/linux/inode.c b/linux/inode.c
+--- a/linux/inode.c	2013-10-03 04:29:47.471339204 -0400
++++ b/linux/inode.c	2013-10-03 04:31:56.607334636 -0400
+@@ -36,7 +36,7 @@
+
+ /* Inode operations */
+ static struct dentry *InodeOpLookup(struct inode *dir,
+-                                    struct dentry *dentry, struct nameidata *nd);
++                                    struct dentry *dentry, unsigned int flags);
+ static int InodeOpReadlink(struct dentry *dentry, char __user *buffer, int buflen);
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 13)
+ static void *InodeOpFollowlink(struct dentry *dentry, struct nameidata *nd);
+@@ -75,7 +75,7 @@
+ static struct dentry *
+ InodeOpLookup(struct inode *dir,      // IN: parent directory's inode
+               struct dentry *dentry,  // IN: dentry to lookup
+-              struct nameidata *nd)   // IN: lookup intent and information
++              unsigned int flags)     // IN: lookup intent and information
+ {
+    char *filename;
+    struct inode *inode;
+@@ -221,7 +221,7 @@
+       goto out;
+    }
+
+-   ret = vfs_follow_link(nd, iinfo->name);
++   nd_set_link(nd, iinfo->name);
+
+ out:
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 13)

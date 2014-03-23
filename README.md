@@ -5,9 +5,18 @@ These bash scripts allow you to easily apply multiple patches to a `VMwareTools-
 
 It has been tested with the following files:
 
-* VMwareTools-9.2.3-1031360.tar.gz (VMWare Workstation 9.0.2)
-* VMwareTools-9.6.0-1294478.tar.gz (VMWare Workstation 10.0.0)
 * VMwareTools-9.6.1-1378637.tar.gz (VMWare Workstation 10.0.1)
+* VMwareTools-9.6.0-1294478.tar.gz (VMWare Workstation 10.0.0)
+* VMwareTools-9.2.3-1031360.tar.gz (VMWare Workstation 9.0.2)
+
+and the following Linux kernels:
+
+* 3.13.0
+* 3.12.0
+* 3.11.0
+* 3.8.0
+* 3.5.0
+* 2.6.32
 
 To run:
 
@@ -34,6 +43,7 @@ If `apt-get` is installed on your system, the following packages will be install
 * linux-headers-$(uname -r)
 * build-essential
 * dkms
+* patch
 * psmisc
 
 If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
