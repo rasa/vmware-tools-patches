@@ -5,11 +5,11 @@ These bash scripts allow you to easily apply multiple patches to a `VMwareTools-
 
 It has been tested with the following files:
 
-* VMwareTools-9.6.2-1688356.tar.gz (VMWare Workstation 10.0.2)
+* VMwareTools-9.6.2-1688356.tar.gz (VMWare Workstation 10.0.2 & 10.0.3)
 * VMwareTools-9.6.1-1378637.tar.gz (VMWare Workstation 10.0.1)
 * VMwareTools-9.6.0-1294478.tar.gz (VMWare Workstation 10.0.0)
-* VMwareTools-9.2.3-1031360.tar.gz (VMWare Workstation 9.0.2)
 * VMwareTools-9.2.4-1398046.tar.gz (WMware Workstation 9.0.3)
+* VMwareTools-9.2.3-1031360.tar.gz (VMWare Workstation 9.0.2)
 
 and apply successfully with the following Linux kernels:
 
