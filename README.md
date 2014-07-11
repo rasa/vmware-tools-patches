@@ -23,6 +23,18 @@ The included patches do not currently apply successfully with the following Linu
 
 * 3.13.x
 
+but VMWare Tools still builds, and installs successfully.
+
+The included patches do not currently apply successfully with the following Linux kernels:
+
+* 3.15.x
+
+and building VMWare Tools fails with the following error:
+
+````
+vmhgfs-only/link.c:186:10: error: implicit declaration of function ‘vfs_readlink’ [-Werror=implicit-function-declaration]
+````
+
 To run:
 
 1. Checkout the repository:
