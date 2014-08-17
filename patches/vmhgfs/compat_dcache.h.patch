@@ -1,0 +1,11 @@
+--- vmhgfs-only.orig/shared/compat_dcache.h 2014-08-15 13:27:54.893517402 -0700
++++ vmhgfs-only.orig/shared/compat_dcache.h 2014-08-15 13:28:13.218998756 -0700
+@@ -51,7 +51,7 @@
+ /*
+  * d_count field was removed in 3.11.0.
+  */
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 11, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 10, 0)
+ #define compat_d_count(dentry) d_count(dentry)
+ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 38)
+ #define compat_d_count(dentry) dentry->d_count
