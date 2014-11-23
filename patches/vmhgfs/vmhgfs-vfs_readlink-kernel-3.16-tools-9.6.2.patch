@@ -1,48 +1,69 @@
-diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/file.c vmware-tools-distrib/lib/modules/source/vmhgfs-only/file.c
-153c153
-< #if defined VMW_USE_AIO
----
-> #ifdef VMW_USE_AIO
-158c158,162
-< #else
----
-> #else /* !VMW_USE_AIO */
-> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
->    .read_iter = generic_file_read_iter,
->    .write_iter = generic_file_write_iter,
-> #endif
-161c165
-< #endif
----
-> #endif /* !VMW_USE_AIO */
-887d890
-<
-929c932,934
-<
----
-> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
->    result = new_sync_read(file, buf, count, offset);
-> #else
-930a936
-> #endif
-980c986,988
-<
----
-> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
->    result = new_sync_write(file, buf, count, offset);
-> #else
-981a990
-> #endif
-diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/link.c vmware-tools-distrib/lib/modules/source/vmhgfs-only/link.c
-185a186
-> #if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
-186a188,190
-> #else
->          error = readlink_copy(buffer, buflen, fileName);
-> #endif
-diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/shared/compat_fs.h vmware-tools-distrib/lib/modules/source/vmhgfs-only/shared/compat_fs.h
-92c92,93
-< #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19)
----
-> #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19) && \
->      LINUX_VERSION_CODE < KERNEL_VERSION(3, 16, 0)
+Source: https://gist.githubusercontent.com/liayn/9afcebcc6b363ae1c1ae/raw/06f2b641393c8df504835d6c19f72992e0512921/hgfs.patch
+Per: https://github.com/rasa/vmware-tools-patches/issues/11#issuecomment-59832409
+
+diff -ruw vmhgfs-only.orig/file.c vmhgfs-only/file.c
+--- vmhgfs-only.orig/file.c	2014-11-23 08:50:48.732263749 -0800
++++ vmhgfs-only/file.c	2014-11-23 08:58:49.866295548 -0800
+@@ -156,6 +156,10 @@
+    .aio_read   = HgfsAioRead,
+    .aio_write  = HgfsAioWrite,
+ #else
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
++   .read_iter = generic_file_read_iter,
++   .write_iter = generic_file_write_iter,
++#endif
+    .read       = HgfsRead,
+    .write      = HgfsWrite,
+ #endif
+@@ -927,7 +931,11 @@
+       goto out;
+    }
+
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
++   result = new_sync_read(file, buf, count, offset);
++#else
+    result = generic_file_read(file, buf, count, offset);
++#endif
+   out:
+    return result;
+ }
+@@ -978,7 +986,11 @@
+       goto out;
+    }
+
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
++   result = new_sync_write(file, buf, count, offset);
++#else
+    result = generic_file_write(file, buf, count, offset);
++#endif
+   out:
+    return result;
+ }
+diff -ruw vmhgfs-only.orig/link.c vmhgfs-only/link.c
+--- vmhgfs-only.orig/link.c	2014-03-21 15:37:16.000000000 -0700
++++ vmhgfs-only/link.c	2014-11-23 08:59:42.841665930 -0800
+@@ -183,7 +183,11 @@
+       } else {
+          LOG(6, (KERN_DEBUG "VMware hgfs: HgfsReadlink: calling "
+                  "vfs_readlink\n"));
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+          error = vfs_readlink(dentry, buffer, buflen, fileName);
++#else
++         error = readlink_copy(buffer, buflen, fileName);
++#endif
+       }
+       kfree(fileName);
+    }
+diff -ruw vmhgfs-only.orig/shared/compat_fs.h vmhgfs-only/shared/compat_fs.h
+--- vmhgfs-only.orig/shared/compat_fs.h	2014-03-21 15:37:36.000000000 -0700
++++ vmhgfs-only/shared/compat_fs.h	2014-11-23 08:52:08.986525839 -0800
+@@ -89,7 +89,8 @@
+  * changed over time, so for simplicity, we'll only enable it from 2.6.19 and
+  * on.
+  */
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19) && \
++         LINUX_VERSION_CODE < KERNEL_VERSION(3, 16, 0)
+ # define VMW_USE_AIO
+ #endif
+

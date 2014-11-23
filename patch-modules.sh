@@ -9,7 +9,7 @@ modules="$(find ${SCRIPT_DIR}/patches -mindepth 1 -maxdepth 1 -type d)"
 for module in ${modules}; do
   patches="$(find ${module} -type f -size +1 -regextype posix-extended -iregex '.*\.(patch|diff)')"
 
-  if [[ "${patches}" ]]; then
-    "${SCRIPT_DIR}/patch-module.sh" "$module"
+  if [[ -n "${patches}" ]]; then
+    "${SCRIPT_DIR}/patch-module.sh" "${module}"
   fi
 done

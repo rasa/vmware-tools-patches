@@ -1,3 +1,6 @@
+Source: https://507664.bugs.gentoo.org/attachment.cgi?id=374932
+Per: https://github.com/rasa/vmware-tools-patches/issues/9#issue-38077487
+
 --- vsock-only/linux/notify.c	2014-04-14 23:36:15.779380482 +0200
 +++ vsock-only/linux/notify.c.new	2014-04-14 23:36:41.396381914 +0200
 @@ -516,7 +516,11 @@
