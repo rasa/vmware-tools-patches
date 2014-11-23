@@ -1,0 +1,48 @@
+diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/file.c vmware-tools-distrib/lib/modules/source/vmhgfs-only/file.c
+153c153
+< #if defined VMW_USE_AIO
+---
+> #ifdef VMW_USE_AIO
+158c158,162
+< #else
+---
+> #else /* !VMW_USE_AIO */
+> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
+>    .read_iter = generic_file_read_iter,
+>    .write_iter = generic_file_write_iter,
+> #endif
+161c165
+< #endif
+---
+> #endif /* !VMW_USE_AIO */
+887d890
+<
+929c932,934
+<
+---
+> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
+>    result = new_sync_read(file, buf, count, offset);
+> #else
+930a936
+> #endif
+980c986,988
+<
+---
+> #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
+>    result = new_sync_write(file, buf, count, offset);
+> #else
+981a990
+> #endif
+diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/link.c vmware-tools-distrib/lib/modules/source/vmhgfs-only/link.c
+185a186
+> #if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+186a188,190
+> #else
+>          error = readlink_copy(buffer, buflen, fileName);
+> #endif
+diff -r vmware-tools-distrib-9.6.2-orig/lib/modules/source/vmhgfs-only/shared/compat_fs.h vmware-tools-distrib/lib/modules/source/vmhgfs-only/shared/compat_fs.h
+92c92,93
+< #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19)
+---
+> #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 19) && \
+>      LINUX_VERSION_CODE < KERNEL_VERSION(3, 16, 0)
