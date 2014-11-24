@@ -1,0 +1,44 @@
+Source: https://507664.bugs.gentoo.org/attachment.cgi?id=374932
+Per: https://github.com/rasa/vmware-tools-patches/issues/9#issue-38077487
+
+--- vsock-only/linux/notify.c	2014-04-14 23:36:15.779380482 +0200
++++ vsock-only/linux/notify.c.new	2014-04-14 23:36:41.396381914 +0200
+@@ -516,7 +516,11 @@
+    PKT_FIELD(vsk, sentWaitingRead) = FALSE;
+ #endif
+
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+    sk->sk_data_ready(sk, 0);
++#else
++   sk->sk_data_ready(sk);
++#endif
+ }
+
+
+--- vsock-only/linux/notifyQState.c	2013-10-18 19:56:12.000000000 +0200
++++ vsock-only/linux/notifyQState.c.new	2014-04-14 23:37:53.316385936 +0200
+@@ -164,7 +164,11 @@
+                      struct sockaddr_vm *dst,    // IN: unused
+                      struct sockaddr_vm *src)    // IN: unused
+ {
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+    sk->sk_data_ready(sk, 0);
++#else
++   sk->sk_data_ready(sk);
++#endif
+ }
+
+
+@@ -566,7 +570,12 @@
+       }
+
+       /* See the comment in VSockVmciNotifyPktSendPostEnqueue */
++
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+       sk->sk_data_ready(sk, 0);
++#else
++      sk->sk_data_ready(sk);
++#endif
+    }
+
+    return err;
