@@ -1,0 +1,24 @@
+Inspired by: https://gist.githubusercontent.com/liayn/a87788b7c2dcecf462e4/raw/79e0be1401fb6c26897fb801c88fe20aa3ecebcf/hgfs3.17.patch
+Per: https://github.com/rasa/vmware-tools-patches/issues/13#issuecomment-62775428
+
+diff -ruw vmhgfs-only.orig/page.c vmhgfs-only/page.c
+--- vmhgfs-only.orig/page.c	2014-03-21 23:37:16.000000000 +0100
++++ vmhgfs-only/page.c	2014-11-12 19:32:06.486997572 +0100
+@@ -1391,11 +1391,17 @@
+ HgfsWbRequestWait(HgfsWbPage *req)  // IN: request of page data to write
+ {
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 13)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 0)
+    return wait_on_bit(&req->wb_flags,
+                       PG_BUSY,
+                       HgfsWbRequestWaitUninterruptible,
+                       TASK_UNINTERRUPTIBLE);
+ #else
++   return wait_on_bit(&req->wb_flags,
++                      PG_BUSY,
++                      TASK_UNINTERRUPTIBLE);
++#endif
++#else
+    wait_event(req->wb_queue,
+               !test_bit(PG_BUSY, &req->wb_flags));
+    return 0;
