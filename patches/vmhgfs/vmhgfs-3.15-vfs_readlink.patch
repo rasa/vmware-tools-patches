@@ -1,0 +1,59 @@
+Source: https://github.com/kergoth/vmware-tools-patches/blob/vmhgfs-3.15/patches/vmhgfs/vmhgfs-3.15-vfs_readlink.patch
+
+--- vmhgfs-only/link.c.orig	2014-04-23 10:11:34.891106441 +0100
++++ vmhgfs-only/link.c	2014-04-23 00:49:03.000000000 +0100
+@@ -151,7 +151,7 @@
+  *
+  *----------------------------------------------------------------------
+  */
+-
++#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
+ static int
+ HgfsReadlink(struct dentry *dentry,  // IN:  Dentry containing link
+              char __user *buffer,    // OUT: User buffer to copy link into
+@@ -189,7 +189,45 @@
+    }
+    return error;
+ }
++#else
++static int
++HgfsReadlink(struct dentry *dentry,  // IN:  Dentry containing link
++             char __user *buffer,    // OUT: User buffer to copy link into
++             int buflen)             // IN:  Length of user buffer
++
++{
++   HgfsAttrInfo attr;
++   char *fileName = NULL;
++   int error;
++
++   ASSERT(dentry);
++   ASSERT(buffer);
++
++   if (!dentry) {
++      LOG(4, (KERN_DEBUG "VMware hgfs: HgfsReadlink: null input\n"));
++      return -EINVAL;
++   }
+
++   LOG(6, (KERN_DEBUG "VMware hgfs: HgfsReadlink: calling "
++           "HgfsPrivateGetattr\n"));
++   error = HgfsPrivateGetattr(dentry, &attr, &fileName);
++   if (!error) {
++
++      /* Let's make sure we got called on a symlink. */
++      if (attr.type != HGFS_FILE_TYPE_SYMLINK || fileName == NULL) {
++         LOG(6, (KERN_DEBUG "VMware hgfs: HgfsReadlink: got called "
++                 "on something that wasn't a symlink\n"));
++         error = -EINVAL;
++      } else {
++         LOG(6, (KERN_DEBUG "VMware hgfs: HgfsReadlink: calling "
++                 "readlink_copy\n"));
++         error = readlink_copy(buffer, buflen, fileName);
++      }
++      kfree(fileName);
++   }
++   return error;
++}
++#endif
+
+ /*
+  *----------------------------------------------------------------------
