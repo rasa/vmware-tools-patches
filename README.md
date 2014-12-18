@@ -5,7 +5,7 @@ These bash scripts allow you to easily apply multiple patches to a `VMwareTools-
 
 It has been tested with the following files:
 
-* [VMwareTools-9.9.0-2304977.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.0/2314774/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.0)
+* [VMwareTools-9.9.0-2304977.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.0/2314774/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.0 & Workstation 11.0.0)
 * [VMwareTools-9.8.4-2202052.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.0.1/2235595/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.0.1)
 * [VMwareTools-9.8.3-2075148.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.0.0/2075534/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.0.0)
 * [VMwareTools-9.6.2-1688356.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/6.0.3/1747349/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 6.0.3/4/5 & Workstation 10.0.2/3/4)
@@ -69,3 +69,26 @@ If `apt-get` is installed on your system, the following packages will be install
 * psmisc
 
 If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
+
+Please note your patches must contain only 1 directory name in them. For example, the following will work:
+
+````
++--- vmhgfs-only/link.c.orig	2014-04-23 10:11:34.891106441 +0100
+++++ vmhgfs-only/link.c	2014-04-23 00:49:03.000000000 +0100
+````
+or
+````
++--- vmhgfs-only.orig/link.c	2014-04-23 10:11:34.891106441 +0100
+++++ vmhgfs-only/link.c	2014-04-23 00:49:03.000000000 +0100
+````
+The following won't work:
+
+````
++--- link.c.orig	2014-04-23 10:11:34.891106441 +0100
+++++ link.c	2014-04-23 00:49:03.000000000 +0100
+````
+or
+````
++--- path/to/vmhgfs-only/link.c.orig	2014-04-23 10:11:34.891106441 +0100
+++++ path/to/vmhgfs-only/link.c	2014-04-23 00:49:03.000000000 +0100
+````
