@@ -1,7 +1,7 @@
 vmware-tools-patches
 ====================
 
-The included bash scripts and patches allow you to easily apply multiple patches to a `VMwareTools-*.tar.gz` file, so VMware Tools will successfully apply for a variety of kernel versions.
+The included bash scripts and patches allow you to easily apply multiple patches to a `VMwareTools-*.tar.gz` file, so VMware Tools will successfully compile and install on a variety of kernel versions.
 
 The included patches have been tested with the following versions of VMware Tools:
 
