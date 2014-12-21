@@ -3,7 +3,7 @@ vmware-tools-patches
 
 These bash scripts allow you to easily apply multiple patches to a `VMwareTools-*.tar.gz` file.
 
-It has been tested with the following files:
+The included patches for VMware Tools have been tested with the following files:
 
 * [VMwareTools-9.9.0-2304977.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.0/2314774/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.0 & Workstation 11.0.0)
 * [VMwareTools-9.8.4-2202052.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.0.1/2235595/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.0.1)
@@ -23,22 +23,22 @@ and apply successfully with the following Linux kernels:
 * 3.5.x
 * 2.6.32
 
-I have not personally tested the following kernels, but presumably the patches will apply successfully on them:
+They patches have not yet been tested with the following kernels, but presumably will apply successfully:
 
 * 3.17.x
 * 3.15.x
 
-The included patches do not currently apply successfully with the following Linux kernels:
+The patches do not yet apply successfully with the following Linux kernels:
 
 * 3.13.x
 
-and building VMWare Tools fails with the following error:
+and building VMware Tools fails with the following error:
 
 ````
 vmhgfs-only/link.c:186:10: error: implicit declaration of function ‘vfs_readlink’ [-Werror=implicit-function-declaration]
 ````
 
-but VMWare Tools still builds, and installs successfully.
+so the `vmhgfs` module failed to build. VMware Tools still installs successfully, but without the "shared folder" functionality.
 
 To run:
 
@@ -70,7 +70,7 @@ If `apt-get` is installed on your system, the following packages will be install
 
 If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
 
-Please note your patches must contain only 1 directory name in them. For example, the following will work:
+Please note your patches must contain only one directory name in them. For example, the following will work:
 
 ````
 +--- vmhgfs-only/link.c.orig	2014-04-23 10:11:34.891106441 +0100
