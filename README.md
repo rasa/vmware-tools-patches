@@ -14,7 +14,7 @@ The included patches have been tested with the following versions of VMware Tool
 * [VMwareTools-9.2.4-1398046.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.5/1945692/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 5.0.5 & Workstation 9.0.3)
 * [VMwareTools-9.2.3-1031360.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 5.0.4 & Workstation 9.0.2)
 
-and apply successfully with the following Linux kernels:
+With the patches applied, at least one version of VMware Tools listed above, compile successfully with the following Linux kernels:
 
 * 3.16.x
 * 3.12.x
