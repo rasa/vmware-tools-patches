@@ -1,0 +1,17 @@
+--- vmhgfs-only.orig/shared/vm_assert.h	2013-10-09 05:31:01.000000000 +0000
++++ vmhgfs-only/shared/vm_assert.h	2014-12-31 15:18:02.847753652 +0000
+@@ -251,12 +251,12 @@
+ #define LOG_ONCE(_s) DO_ONCE(Log _s)
+ 
+ #ifdef VMX86_DEVEL
+-   #define DEPRECATED(_fix) DO_ONCE(                                     \
++   #define VMW_DEPRECATED(_fix) DO_ONCE(                                     \
+                                Warning("%s:%d: %s is DEPRECATED. %s\n",  \
+                                        __FILE__, __LINE__, __FUNCTION__, \
+                                        _fix))
+ #else
+-   #define DEPRECATED(_fix) do {} while (0)
++   #define VMW_DEPRECATED(_fix) do {} while (0)
+ #endif
+ 
+ 
