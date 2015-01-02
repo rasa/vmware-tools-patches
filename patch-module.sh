@@ -66,15 +66,13 @@ pushd lib/modules/source >/dev/null
     for patch in ${patches}; do
       base="$(basename ${patch})"
       dir="$(basename $(dirname ${patch}))"
-      echo -e "--- Applying ${dir}/${base} ...\n"
       patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >/dev/null 2>&1
       if [ $? -eq 0 ]; then
-        echo -e "--- Applying ${dir}/${base} ...\n"
+        echo "*** Applying ${dir}/${base} ..."
         patch --batch --ignore-whitespace --strip=1 < "${patch}"
       else
-        echo -e "--- Skipping ${dir}/${base}: did not apply cleanly\n"
+        echo "*** Skipping ${dir}/${base}: did not apply cleanly"
       fi
-      echo
     done
 
   popd >/dev/null
