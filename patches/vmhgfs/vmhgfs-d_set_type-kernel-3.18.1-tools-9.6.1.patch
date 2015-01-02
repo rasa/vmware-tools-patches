@@ -1,0 +1,10 @@
+--- ../vmhgfs-only/filesystem.c	2015-01-01 05:58:21.489892698 +0000
++++ vmhgfs-only/filesystem.c	2015-01-01 13:53:35.036611203 +0000
+@@ -408,6 +408,7 @@
+    HgfsChangeFileAttributes(tempRootDentry->d_inode, &rootDentryAttr);
+    HgfsDentryAgeReset(tempRootDentry);
+    tempRootDentry->d_op = &HgfsDentryOperations;
++   __d_set_type(tempRootDentry, DCACHE_DIRECTORY_TYPE);
+ 
+    *rootDentry = tempRootDentry;
+    result = 0;

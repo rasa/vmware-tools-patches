@@ -128,7 +128,7 @@ diff -ur vmhgfs-only.orig/shared/compat_cred.h vmhgfs-only/shared/compat_cred.h
  #define current_fsgid() (current->fsgid)
  #endif
 
-+#ifdef CONFIG_UIDGID_STRICT_TYPE_CHECKS
++#if defined(CONFIG_UIDGID_STRICT_TYPE_CHECKS) || LINUX_VERSION_CODE >= KERNEL_VERSION(3, 14, 0)
 +#define CURRENT_FSUID() (__kuid_val(current_fsuid()))
 +#define CURRENT_FSGID() (__kgid_val(current_fsgid()))
 +#define CURRENT_UID() (__kuid_val(current_uid()))
