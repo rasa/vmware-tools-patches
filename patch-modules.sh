@@ -13,3 +13,7 @@ for module in ${modules}; do
     "${SCRIPT_DIR}/patch-module.sh" "${module}"
   fi
 done
+
+if [[ "${VMWARE_TOOLS_PATCHES_DEBUG-}" =~ (pause|PAUSE) ]]; then
+  read -p "Press [Enter] to continue: "
+fi
