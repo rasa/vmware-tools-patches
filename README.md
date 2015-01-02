@@ -17,6 +17,8 @@ The included patches have been tested with the following versions of VMware Tool
 
 With the patches applied, at least one version of VMware Tools listed above, compile successfully with the following Linux kernels:
 
+* 3.18.x
+* 3.17.x
 * 3.16.x
 * 3.12.x
 * 3.11.x
@@ -26,7 +28,6 @@ With the patches applied, at least one version of VMware Tools listed above, com
 
 The patches have not yet been tested with the following kernels, but presumably will apply successfully:
 
-* 3.17.x
 * 3.15.x
 
 The patches do not yet apply successfully with the following Linux kernels:
