@@ -67,7 +67,13 @@ pushd lib/modules/source >/dev/null
       base="$(basename ${patch})"
       dir="$(basename $(dirname ${patch}))"
       echo -e "--- Applying ${dir}/${base} ...\n"
-      patch --batch --force --ignore-whitespace --strip=1 < "${patch}"
+      patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >/dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        echo -e "--- Applying ${dir}/${base} ...\n"
+        patch --batch --ignore-whitespace --strip=1 < "${patch}"
+      else
+        echo -e "--- Skipping ${dir}/${base}: did not apply cleanly\n"
+      fi
       echo
     done
 
