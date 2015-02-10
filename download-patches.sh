@@ -6,7 +6,7 @@ set -x
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-WGET="wget --no-check-certficate"
+WGET="wget --no-check-certificate"
 
 URLS="
 vmblock,https://sites.google.com/site/mysticalzerotmp/vmblock.3.10.patch
