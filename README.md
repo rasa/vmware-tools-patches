@@ -64,7 +64,7 @@ and building VMware Tools fails with the following error:
 vmhgfs-only/link.c:186:10: error: implicit declaration of function ‘vfs_readlink’ [-Werror=implicit-function-declaration]
 ````
 
-so the `vmhgfs` module failed to build. VMware Tools still installs successfully, but without the "shared folder" functionality.
+so the `vmhgfs` kernel module failed to build. VMware Tools still installs successfully, but without the "shared folder" functionality.
 
 ## Required Patch Format
 
