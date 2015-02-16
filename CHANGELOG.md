@@ -1,0 +1,1 @@
+vmware-tools-patches changelog
