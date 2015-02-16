@@ -113,7 +113,7 @@ To view existing bugs, or report a new bug, please see the [issues](/issues) pag
 
 ## License
 
-This project is [MIT licensed](LICENSE.md).
+This project is [MIT licensed](LICENSE).
 
 ## Changelog
 
