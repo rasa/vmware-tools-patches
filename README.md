@@ -1,9 +1,7 @@
 # VMware Tools Patches
 
-## Synopsis
-
-vmware-tools-patches includes bash scripts and patches that applies multiple patches to a 
-`VMwareTools-*.tar.gz` file, so VMware Tools will successfully compile and install on a variety of kernel versions.
+vmware-tools-patches patches the source code contained in a `VMwareTools-*.tar.gz` file, 
+so VMware Tools will successfully compile and install on a variety of kernel versions.
 
 ## Quick Start
 
