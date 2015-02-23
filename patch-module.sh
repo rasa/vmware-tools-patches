@@ -25,7 +25,7 @@ if [[ ! -d "${patchdir}" ]]; then
   exit 3
 fi
 
-patches="$(find ${patchdir} -type f -size +1c -regextype posix-extended -iregex '.*\.(patch|diff)')"
+patches="$(find ${patchdir} -type f -size +1c -regextype posix-extended -iregex '.*\.(patch|diff)' | sort)"
 
 if [[ -z "${patches}" ]]; then
   echo $0: Error: no patches found in ${patchdir} >&2
