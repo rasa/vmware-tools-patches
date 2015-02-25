@@ -6,10 +6,12 @@ Per: https://github.com/rasa/vmware-tools-patches/issues/9#issue-38077487
 @@ -178,7 +178,11 @@
        return -EINVAL;
     }
-
+ 
 +#if LINUX_VERSION_CODE <= KERNEL_VERSION(3, 14, 99)
     return vfs_readlink(dentry, buffer, buflen, iinfo->name);
 +#else
 +   return readlink_copy(buffer, buflen, iinfo->name);
 +#endif
  }
+ 
+ 
