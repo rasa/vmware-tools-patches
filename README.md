@@ -1,29 +1,31 @@
-# VMware Tools Patches
+# VMware Tools Patches [![Flattr this][flatter_png]][flatter]
 
-vmware-tools-patches patches the source code contained in a `VMwareTools-*.tar.gz` file, 
-so VMware Tools will successfully compile and install on a variety of kernel versions.
+Patch VMware Tools source code for a variety of VMware Tools and kernel versions.
 
 ## Quick Start
 
 To build VMware Tools, do the following:
 
 1. Checkout the repository:
-<pre>
-$ git clone https://github.com/rasa/vmware-tools-patches.git
-</pre>
-2. Copy your patch(es) into the appropriate directory in the `patches` directory. The file must end in `.patch`, or `.diff`. This step is optional. For example:
-<pre>
-$ cp great-new.patch vmware-tools-patches/patches/vmhgfs
-</pre>
+	````bash
+	$ git clone https://github.com/rasa/vmware-tools-patches.git
+	````
+
+2. *(Optional)* Copy your patch(es) into the appropriate directory in the `patches` directory. Patches must end in `.patch`, or `.diff` and be [properly formatted](#required-patch-format). For example:
+	````bash
+	$ cp great-new.patch vmware-tools-patches/patches/vmhgfs
+	````
+
 3. Copy a `VMwareTools-*.tar.gz` into the `vmware-tools-patches` folder:
-<pre>
-$ cp VMwareTools-*.tar.gz vmware-tools-patches/
-</pre>
+	````bash
+	$ cp VMwareTools-*.tar.gz vmware-tools-patches/
+	````
+
 4. Apply the patches, and then run the `vmware-install.pl` installer:
-<pre>
-$ cd vmware-tools-patches
-$ ./untar-and-patch-and-compile.sh
-</pre>
+	````bash
+	$ cd vmware-tools-patches
+	$ ./untar-and-patch-and-compile.sh
+	````
 
 ## Supported Versions and Kernels
 
@@ -109,19 +111,24 @@ To contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Bugs
 
-To view existing bugs, or report a new bug, please see the [issues](/issues) page for this project.
+To view existing bugs, or report a new bug, please see [issues](../../issues).
+
+## Changelog
+
+To view the version history for this project, please see [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
 This project is [MIT licensed](LICENSE).
 
-## Changelog
-
-Please see [CHANGELOG.md](CHANGELOG.md) for the version history for this project.
-
 ## Contact
 
-This project was originally developed by [Ross Smith II](mailto:ross@smithii.com). 
-Any enhancements and suggestions are welcome.
+This project was created and is maintained by [Ross Smith II][] [![endorse][endorse_png]][endorse]
 
-## Links
+Feedback, suggestions, and enhancements are welcome.
+
+[Ross Smith II]: mailto:ross@smithii.com "ross@smithii.com"
+[flatter]: https://flattr.com/submit/auto?user_id=rasa&url=https%3A%2F%2Fgithub.com%2Frasa%2Fvmware-tools-patches
+[flatter_png]: http://button.flattr.com/flattr-badge-large.png "Flattr this"
+[endorse]: https://coderwall.com/rasa
+[endorse_png]: https://api.coderwall.com/rasa/endorsecount.png "endorse"
