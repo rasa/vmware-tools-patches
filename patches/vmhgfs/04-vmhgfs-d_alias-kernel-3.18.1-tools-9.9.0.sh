@@ -12,14 +12,12 @@ if [[ -z "${DCACHE_H}" ]]; then
 	exit 1
 fi
 
-if [[ ! -f "${DCACHE_H}" ]]; then
-	if ! grep -q __GENKSYMS__ "${DCACHE_H}"; then
-		echo $0: __GENKSYMS__ not found in dcache.h
-		exit 0
-	fi
+if ! grep -q __GENKSYMS__ "${DCACHE_H}"; then
+	echo $0: __GENKSYMS__ not found in ${DCACHE_H}
+	exit 0
 fi
 
-echo Post-patching inode.c
+echo Post-patching inode.c as __GENKSYMS__ was found in ${DCACHE_H}
 sed -i.bak -e "s|\(D_ALIAS_IS_A_MEMBER_OF_UNION_D_U)\)|\1 \&\& 0 /* use d_u.d_alias as __GENKSYMS__ was found in ${DCACHE_H} */|" inode.c
 
 if [[ $? -gt 0 ]]; then
