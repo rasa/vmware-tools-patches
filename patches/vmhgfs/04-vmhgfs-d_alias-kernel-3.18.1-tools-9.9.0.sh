@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 
-DCACHE_H="$(find -L /lib/modules/$(uname -r) -name 'dcache.h')"
+DCACHE_H=
+
+if [[ -d "/lib/modules/$(uname -r)" ]]; then
+	DCACHE_H="$(find -L /lib/modules/$(uname -r) -name 'dcache.h' | head -n 1)"
+fi
 
 if [[ -z "${DCACHE_H}" ]]; then
 	LINUX_DIRS="$(find /usr/src -type d -name "$(uname -r)*")"
-	DCACHE_H="$(find ${LINUX_DIRS} -name 'dcache.h')"
+	if [[ -z "${LINUX_DIRS}" ]]; then
+		echo $0: Directory not found: /usr/src/$(uname -r)\* >&2
+		exit 2
+	fi
+	DCACHE_H="$(find ${LINUX_DIRS} -name 'dcache.h' | head -n 1)"
 fi
 
 if [[ -z "${DCACHE_H}" ]]; then
@@ -12,8 +20,9 @@ if [[ -z "${DCACHE_H}" ]]; then
 	exit 1
 fi
 
+# On Debian, if __GENKSYMS__ is not defined, then d_alias is inside struct d_u
 if ! grep -q __GENKSYMS__ "${DCACHE_H}"; then
-	echo $0: __GENKSYMS__ not found in ${DCACHE_H}
+	echo $0: No changes made, as __GENKSYMS__ is not in ${DCACHE_H}
 	exit 0
 fi
 
