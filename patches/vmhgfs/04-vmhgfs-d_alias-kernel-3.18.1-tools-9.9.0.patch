@@ -4,7 +4,7 @@
                             p,
  #endif
                             &inode->i_dentry,
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 7)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 1) && !defined(__GENKSYMS__) && !defined(D_ALIAS_IS_A_MEMBER_OF_UNION_D_U)
                             d_alias) {
 +#else
 +                           d_u.d_alias) {
@@ -16,7 +16,7 @@
        /* Find a dentry with valid d_count. Refer bug 587879. */
        list_for_each(pos, &inode->i_dentry) {
           int dcount;
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 17, 7)
++#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 18, 1) && !defined(__GENKSYMS__) && !defined(D_ALIAS_IS_A_MEMBER_OF_UNION_D_U)
           struct dentry *dentry = list_entry(pos, struct dentry, d_alias);
 +#else
 +         struct dentry *dentry = list_entry(pos, struct dentry, d_u.d_alias);

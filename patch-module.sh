@@ -32,6 +32,8 @@ if [[ -z "${patches}" ]]; then
   exit 4
 fi
 
+scripts="$(find ${patchdir} -type f -name '*.sh' | sort)"
+
 module="$(basename ${patchdir})"
 
 if [[ ! -d lib/modules/source ]]; then
@@ -74,6 +76,16 @@ pushd lib/modules/source >/dev/null
         echo "*** Skipping ${dir}/${base}: did not apply cleanly"
       fi
     done
+
+		if [[ -n "${scripts}" ]]; then
+			for script in ${scripts}; do
+	      base="$(basename ${script})"
+	      dir="$(basename $(dirname ${script}))"
+				chmod +x "${script}"
+				echo "*** Running ${dir}/${base}"
+				"${script}"
+			done
+		fi
 
   popd >/dev/null
 
