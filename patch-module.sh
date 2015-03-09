@@ -27,11 +27,6 @@ fi
 
 patches="$(find ${patchdir} -type f -size +1c -regextype posix-extended -iregex '.*\.(patch|diff)' | sort)"
 
-if [[ -z "${patches}" ]]; then
-  echo $0: Error: no patches found in ${patchdir} >&2
-  exit 4
-fi
-
 scripts="$(find ${patchdir} -type f -name '*.sh' | sort)"
 
 module="$(basename ${patchdir})"
@@ -65,17 +60,19 @@ pushd lib/modules/source >/dev/null
 
   pushd "${module}-only" >/dev/null
 
-    for patch in ${patches}; do
-      base="$(basename ${patch})"
-      dir="$(basename $(dirname ${patch}))"
-      patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >/dev/null 2>&1
-      if [ $? -eq 0 ]; then
-        echo "*** Applying ${dir}/${base} ..."
-        patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
-      else
-        echo "*** Skipping ${dir}/${base}: did not apply cleanly"
-      fi
-    done
+		if [[ -n "${patches}" ]]; then
+			for patch in ${patches}; do
+				base="$(basename ${patch})"
+				dir="$(basename $(dirname ${patch}))"
+				patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >/dev/null 2>&1
+				if [ $? -eq 0 ]; then
+					echo "*** Applying ${dir}/${base} ..."
+					patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
+				else
+					echo "*** Skipping ${dir}/${base}: did not apply cleanly"
+				fi
+			done
+		fi
 
 		if [[ -n "${scripts}" ]]; then
 			for script in ${scripts}; do
