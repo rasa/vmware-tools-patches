@@ -21,7 +21,7 @@ To build VMware Tools, do the following:
 	$ cp VMwareTools-*.tar.gz vmware-tools-patches/
 	````
 
-   It is strongly suggested to use the latest version of VMware Tools.
+   It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools.
 
 4. Apply the patches, and then run the `vmware-install.pl` installer:
 	````bash
