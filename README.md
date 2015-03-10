@@ -21,13 +21,15 @@ To build VMware Tools, do the following:
 	$ cp VMwareTools-*.tar.gz vmware-tools-patches/
 	````
 
+   It is strongly suggested to use the latest version of VMware Tools.
+
 4. Apply the patches, and then run the `vmware-install.pl` installer:
 	````bash
 	$ cd vmware-tools-patches
 	$ ./untar-and-patch-and-compile.sh
 	````
 
-## Supported Versions and Kernels
+## Tested VMware Tools Versions
 
 The included patches have been tested with the following versions of VMware Tools:
 
@@ -41,11 +43,15 @@ The included patches have been tested with the following versions of VMware Tool
 * [VMwareTools-9.2.4-1398046.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.5/1945692/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 5.0.5 & Workstation 9.0.3)
 * [VMwareTools-9.2.3-1031360.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 5.0.4 & Workstation 9.0.2)
 
+## Tested Kernels
+
 With the patches applied, at least one version of VMware Tools listed above, compile successfully with the following Linux kernels:
 
+* 3.19.x
 * 3.18.x
 * 3.17.x
 * 3.16.x
+* 3.13.x
 * 3.12.x
 * 3.11.x
 * 3.8.x
@@ -56,11 +62,9 @@ The patches have not yet been tested with the following kernels, but presumably 
 
 * 3.15.x
 
-The patches do not yet apply successfully with the following Linux kernels:
+## Encountering Failures
 
-* 3.13.x
-
-and building VMware Tools fails with the following error:
+If the patches do not apply successfully, you may get an error, such as
 
 ````
 vmhgfs-only/link.c:186:10: error: implicit declaration of function ‘vfs_readlink’ [-Werror=implicit-function-declaration]
