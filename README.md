@@ -44,7 +44,7 @@ With the patches applied, at least one version of VMware Tools listed [below](#t
 * [3.5.x](http://kernelnewbies.org/Linux_3.5)
 * [2.6.32](http://kernelnewbies.org/Linux_2.6.32)
 
-The patches have not yet been tested with the following kernels, but presumably will apply successfully:
+We have not received any reports of the patches failing on the following kernels, so presumably they apply successfully:
 
 * [3.15.x](http://kernelnewbies.org/Linux_3.15)
 * [3.14.x](http://kernelnewbies.org/Linux_3.14)
