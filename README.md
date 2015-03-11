@@ -31,7 +31,7 @@ To build VMware Tools, do the following:
 
 ## Tested Kernels
 
-With the patches applied, at least one version of VMware Tools listed (below](#tested-vmware-tools-versions), compile successfully with the following Linux kernels:
+With the patches applied, at least one version of VMware Tools listed [below](#tested-vmware-tools-versions), compile successfully with the following Linux kernels:
 
 * 3.19.x
 * 3.18.x
