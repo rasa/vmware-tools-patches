@@ -33,20 +33,24 @@ To build VMware Tools, do the following:
 
 With the patches applied, at least one version of VMware Tools listed [below](#tested-vmware-tools-versions), compiles successfully with the following Linux kernels:
 
-* 3.19.x
-* 3.18.x
-* 3.17.x
-* 3.16.x
-* 3.13.x
-* 3.12.x
-* 3.11.x
-* 3.8.x
-* 3.5.x
-* 2.6.32
+* [3.19.x](http://kernelnewbies.org/Linux_3.19)
+* [3.18.x](http://kernelnewbies.org/Linux_3.18)
+* [3.17.x](http://kernelnewbies.org/Linux_3.17)
+* [3.16.x](http://kernelnewbies.org/Linux_3.16)
+* [3.13.x](http://kernelnewbies.org/Linux_3.13)
+* [3.12.x](http://kernelnewbies.org/Linux_3.12)
+* [3.11.x](http://kernelnewbies.org/Linux_3.11)
+* [3.8.x](http://kernelnewbies.org/Linux_3.8)
+* [3.5.x](http://kernelnewbies.org/Linux_3.5)
+* [2.6.32](http://kernelnewbies.org/Linux_2.6.32)
 
 The patches have not yet been tested with the following kernels, but presumably will apply successfully:
 
-* 3.15.x
+* [3.15.x](http://kernelnewbies.org/Linux_3.15)
+* [3.14.x](http://kernelnewbies.org/Linux_3.14)
+* [3.10.x](http://kernelnewbies.org/Linux_3.10)
+* [3.9.x](http://kernelnewbies.org/Linux_3.9)
+* [3.7.x](http://kernelnewbies.org/Linux_3.7) and earlier
 
 ## Tested VMware Tools Versions
 
