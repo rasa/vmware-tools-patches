@@ -23,10 +23,15 @@ To build VMware Tools, do the following:
 
    It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools. You can use [download-tools.sh](../../blob/master/download-tools.sh) to download the latest version.
 
-4. Apply the patches, and then run the `vmware-install.pl` installer:
+4. Untar the tarball, and apply the patches:
 	````bash
 	$ cd vmware-tools-patches
-	$ ./untar-and-patch-and-compile.sh
+	$ ./untar-and-patch.sh
+	````
+
+5. Run the `vmware-install.pl` installer to install VMware Tools:
+	````bash
+	$ ./compile.sh
 	````
 
 ## Tested Kernels

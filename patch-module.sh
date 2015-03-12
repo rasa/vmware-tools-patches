@@ -64,7 +64,7 @@ pushd lib/modules/source >/dev/null
 			for patch in ${patches}; do
 				base="$(basename ${patch})"
 				dir="$(basename $(dirname ${patch}))"
-				patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >/dev/null 2>&1
+				patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >$base.patch.err 2>&1
 				if [ $? -eq 0 ]; then
 					echo "*** Applying ${dir}/${base} ..."
 					patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
@@ -87,9 +87,5 @@ pushd lib/modules/source >/dev/null
   popd >/dev/null
 
   tar -cf "${module}.tar" "${module}-only"
-
-  if [[ -z "${VMWARE_TOOLS_PATCHES_DEBUG}" ]]; then
-    rm -rf "${module}-only"
-  fi
 
 popd >/dev/null

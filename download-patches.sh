@@ -33,7 +33,7 @@ pushd patches
       ${WGET} "${url}"
 
       if [[ "${file}" = "vmware9.compat_mm.patch" ]]; then
-        perl -pi.bak -e 's|(vmware9.compat_mm.patch)|shared/\1|;' "${file}"
+        sed -i.bak -e 's/\(vmware9.compat_mm.patch\)/shared\/\1/;' "${file}"
       fi
 
     popd
