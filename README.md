@@ -73,13 +73,13 @@ The included patches have been tested with the following versions of VMware Tool
 
 ## Encountering Failures
 
-If the patches do not apply successfully, you may get an error, such as
+If one or more patches do not apply successfully, you may get an error during compilation, such as
 
 ````
 vmhgfs-only/link.c:186:10: error: implicit declaration of function ‘vfs_readlink’ [-Werror=implicit-function-declaration]
 ````
 
-so the `vmhgfs` kernel module failed to build. VMware Tools still installs successfully, but without the "shared folder" functionality.
+This indicates the `vmhgfs` kernel module failed to build and was not installed. That may be acceptable, as VMware Tools still installed successfully, but without the "shared folder" functionality provided by the `vmhgfs` module.
 
 ## Required Patch Format
 
