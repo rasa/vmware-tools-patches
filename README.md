@@ -114,7 +114,17 @@ If `apt-get` is installed on your system, the following packages will be install
 * build-essential
 * dkms
 * patch
+* perl
 * psmisc
+
+If `yum` is installed on your system, the following packages will be installed prior to compilation:
+
+* gcc
+* glibc-headers 
+* kernel-devel
+* kernel-headers 
+* make 
+* perl
 
 If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
 
