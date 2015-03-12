@@ -64,5 +64,5 @@ diff -burN vmhgfs-only.a/shared/autoconf/d_alias.c vmhgfs-only.b/shared/autoconf
 +{
 +   struct dentry dentry;
 +
-+   dentry.d_alias = NULL;
++   dentry.d_alias.next = NULL;
 +}
