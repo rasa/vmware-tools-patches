@@ -20,6 +20,11 @@ https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.5/1945692/packages/
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/com.vmware.fusion.tools.linux.zip.tar
 "
 
+# version parameter can be passed to script to indicate which tools to download
+if [[ ! -z $1 ]]; then
+	URLS=$(echo "$URLS" | grep $1)
+fi
+
 # jessie doesn't load the loop device automatically?
 sudo modprobe loop
 
