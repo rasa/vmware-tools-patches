@@ -16,12 +16,15 @@ To build VMware Tools, do the following:
 	$ cp great-new.patch vmware-tools-patches/patches/vmhgfs
 	````
 
-3. Copy a `VMwareTools-*.tar.gz` into the `vmware-tools-patches` folder:
+3. Copy or download the version of VMware Tools you wish to use into the `vmware-tools-patches` folder. One way to do this is using [download-tools.sh](../../blob/master/download-tools.sh) and pass it the version number:
 	````bash
-	$ cp VMwareTools-*.tar.gz vmware-tools-patches/
+	$ cd vmware-tools-patches
+	$ ./download-tools.sh 7.1.1
 	````
 
-   It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools. You can use [download-tools.sh](../../blob/master/download-tools.sh) to download the latest version.
+   It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools.
+
+   VMware Tools is also included inside the `linux.iso` file that is shipped with VMware Fusion, Player, and Workstation. 
 
 4. Untar the tarball, and apply the patches:
 	````bash
