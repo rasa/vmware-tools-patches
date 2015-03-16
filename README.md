@@ -111,7 +111,7 @@ or
 
 ## Dependencies
 
-If `apt-get` or `yum` is installed on your system, the following packages will be installed prior to compilation:
+If `apt-get` is installed on your system, the following packages will be installed prior to compilation:
 
 * linux-headers-$(uname -r)
 * build-essential
@@ -129,7 +129,7 @@ If `yum` is installed on your system, the following packages will be installed p
 * make 
 * perl
 
-If `apt-get` is not installed, you will need to install these (or equivalent) packages manually, before starting.
+If neither `apt-get` or `yum` is installed, you will need to install these (or equivalent) packages manually, before starting.
 
 ## Contributing
 
