@@ -1,0 +1,68 @@
+diff -uwNr vmhgfs-only.orig/inode.c vmhgfs-only/inode.c
+--- vmhgfs-only.orig/inode.c	2014-03-21 15:37:16.000000000 -0700
++++ vmhgfs-only/inode.c	2015-03-18 19:19:10.593494394 -0700
+@@ -1900,7 +1900,12 @@
+                            p,
+ #endif
+                            &inode->i_dentry,
+-                           d_alias) {
++#if defined(VMW_D_ALIAS_3181) || LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 1)
++                           d_u.d_alias
++#else
++                           d_alias
++#endif
++                           ) {
+          int dcount = compat_d_count(dentry);
+          if (dcount) {
+             LOG(4, ("Found %s %d \n", dentry->d_name.name, dcount));
+@@ -1953,7 +1958,13 @@
+       /* Find a dentry with valid d_count. Refer bug 587879. */
+       list_for_each(pos, &inode->i_dentry) {
+          int dcount;
+-         struct dentry *dentry = list_entry(pos, struct dentry, d_alias);
++         struct dentry *dentry = list_entry(pos, struct dentry,
++#if defined(VMW_D_ALIAS_3181) || LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 1)
++                                            d_u.d_alias
++#else
++                                            d_alias
++#endif
++                                            );
+          dcount = compat_d_count(dentry);
+          if (dcount) {
+             LOG(4, ("Found %s %d \n", (dentry)->d_name.name, dcount));
+diff -uwNr vmhgfs-only.orig/Makefile.kernel vmhgfs-only/Makefile.kernel
+--- vmhgfs-only.orig/Makefile.kernel	2014-03-21 15:37:16.000000000 -0700
++++ vmhgfs-only/Makefile.kernel	2015-03-18 19:23:05.999428918 -0700
+@@ -34,6 +34,7 @@
+ EXTRA_CFLAGS += $(call vm_check_build, $(AUTOCONF_DIR)/getsb1.c,, -DVMW_GETSB_2618)
+ EXTRA_CFLAGS += $(call vm_check_build, $(AUTOCONF_DIR)/statfs1.c,, -DVMW_STATFS_2618)
+ EXTRA_CFLAGS += $(call vm_check_build, $(AUTOCONF_DIR)/inode1.c,, -DVMW_INODE_2618)
++EXTRA_CFLAGS += $(call vm_check_build, $(AUTOCONF_DIR)/d_alias.c,, -DVMW_D_ALIAS_3181)
+
+ MODPOST_VMCI_SYMVERS := $(wildcard $(MODULEBUILDDIR)/VMwareVMCIModule.symvers)
+
+diff -uwNr vmhgfs-only.orig/shared/autoconf/d_alias.c vmhgfs-only/shared/autoconf/d_alias.c
+--- vmhgfs-only.orig/shared/autoconf/d_alias.c	1969-12-31 16:00:00.000000000 -0800
++++ vmhgfs-only/shared/autoconf/d_alias.c	2015-03-18 19:14:44.751231007 -0700
+@@ -0,0 +1,21 @@
++/*********************************************************
++ * Copyright (C) 2015 Ross Smith II. MIT Licensed.
++ *
++ *********************************************************/
++
++#include "compat_version.h"
++#include "compat_autoconf.h"
++
++#include <linux/dcache.h>
++
++/*
++ * After 3.18.1, the dentry d_alias field was moved to struct d_u.
++ *
++ * This test will fail on a kernel with such a patch.
++ */
++void test(void)
++{
++   struct dentry dentry;
++
++   dentry.d_alias.next = NULL;
++}

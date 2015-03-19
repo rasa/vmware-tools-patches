@@ -66,6 +66,7 @@ pushd lib/modules/source >/dev/null
 				dir="$(basename $(dirname ${patch}))"
 				patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >$base.patch.err 2>&1
 				if [ $? -eq 0 ]; then
+					rm $base.patch.err
 					echo "*** Applying ${dir}/${base} ..."
 					patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
 				else
