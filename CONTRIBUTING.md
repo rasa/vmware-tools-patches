@@ -14,14 +14,7 @@ patches and features.
 
 The [issue tracker](/issues) is
 the preferred channel for [bug reports](#bug-reports), [features requests](#feature-requests)
-and [submitting pull requests](#pull-requests), but please respect the following
-restrictions:
-
-* Please **do not** use the issue tracker for personal support requests (use
-  [Stack Overflow](https://stackoverflow.com/questions/tagged/vmware-tools-patches)).
-
-* Please **do not** derail or troll issues. Keep the discussion on topic and
-  respect the opinions of others.
+and [submitting pull requests](#pull-requests).
 
 ## Bug reports
 
@@ -69,7 +62,6 @@ Feature requests are welcome. But take a moment to find out whether your idea
 fits with the scope and aims of the project. It's up to *you* to make a strong
 case to convince the project's developers of the merits of this feature. Please
 provide as much detail and context as possible.
-
 
 ## Pull requests
 
