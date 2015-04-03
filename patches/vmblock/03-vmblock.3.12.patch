@@ -4,7 +4,7 @@ diff -Naur a/linux/control.c b/linux/control.c
 @@ -283,7 +283,7 @@
     int i;
     int retval;
-
+ 
 -   name = getname(buf);
 +   name = (char*)getname(buf)->name;
     if (IS_ERR(name)) {
@@ -15,15 +15,15 @@ diff -Naur a/linux/dentry.c b/linux/dentry.c
 +++ b/linux/dentry.c	2013-10-03 04:31:56.607334636 -0400
 @@ -32,7 +32,7 @@
  #include "block.h"
-
-
+ 
+ 
 -static int DentryOpRevalidate(struct dentry *dentry, struct nameidata *nd);
 +static int DentryOpRevalidate(struct dentry *dentry, unsigned int flags);
-
+ 
  struct dentry_operations LinkDentryOps = {
     .d_revalidate = DentryOpRevalidate,
 @@ -60,7 +60,7 @@
-
+ 
  static int
  DentryOpRevalidate(struct dentry *dentry,  // IN: dentry revalidating
 -                   struct nameidata *nd)   // IN: lookup flags & intent
@@ -38,13 +38,13 @@ diff -Naur a/linux/dentry.c b/linux/dentry.c
 -      return actualDentry->d_op->d_revalidate(actualDentry, nd);
 +      return actualDentry->d_op->d_revalidate(actualDentry, flags);
     }
-
+ 
     if (compat_path_lookup(iinfo->name, 0, &actualNd)) {
 diff -Naur a/linux/inode.c b/linux/inode.c
 --- a/linux/inode.c	2013-10-03 04:29:47.471339204 -0400
 +++ b/linux/inode.c	2013-10-03 04:31:56.607334636 -0400
 @@ -36,7 +36,7 @@
-
+ 
  /* Inode operations */
  static struct dentry *InodeOpLookup(struct inode *dir,
 -                                    struct dentry *dentry, struct nameidata *nd);
@@ -64,9 +64,9 @@ diff -Naur a/linux/inode.c b/linux/inode.c
 @@ -221,7 +221,7 @@
        goto out;
     }
-
+ 
 -   ret = vfs_follow_link(nd, iinfo->name);
 +   nd_set_link(nd, iinfo->name);
-
+ 
  out:
  #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 13)

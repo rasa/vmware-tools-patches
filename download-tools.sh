@@ -25,8 +25,12 @@ if [[ -n "$1" ]]; then
 	URLS=$(echo "$URLS" | grep "$1")
 fi
 
-# jessie doesn't load the loop device automatically?
-sudo modprobe loop
+SEVENZIP=$(which 7z 2>/dev/null)
+
+if [[ -z "${SEVENZIP}" ]]; then
+	# jessie doesn't load the loop device automatically?
+	sudo modprobe loop
+fi
 
 mkdir -p downloads
 pushd downloads >/dev/null
@@ -60,17 +64,25 @@ pushd downloads >/dev/null
       exit 2
     fi
 
-    sudo mkdir -p /mnt/cdrom
-    sudo mount -o loop payload/*.iso /mnt/cdrom
+		if [[ -n "${SEVENZIP}" ]]; then
+			ISO_DIR=payload
+			"${SEVENZIP}" x -o${ISO_DIR} payload/*.iso
+		else
+			ISO_DIR=/mnt/cdrom
+			sudo mkdir -p ${ISO_DIR}
+			sudo mount -o loop payload/*.iso ${ISO_DIR}
+		fi
 
-    tools="$(find /mnt/cdrom -name 'VMwareTools-*.tar.gz')"
+		tools="$(find ${ISO_DIR} -name 'VMwareTools-*.tar.gz')"
 
     dest="../$(basename "${tools}")"
 
     cp -v "${tools}" "${dest}"
     chmod ug+w "${dest}"
 
-    sudo umount /mnt/cdrom
+		if [[ -z "${SEVENZIP}" ]]; then
+	    sudo umount /mnt/cdrom
+		fi
 
     rm -fr payload
     rm -f descriptor.xml manifest.plist
