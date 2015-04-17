@@ -1,0 +1,71 @@
+diff --git a/filesystem.c b/filesystem.c
+index 7685eb8..966b0f7 100644
+--- a/filesystem.c
++++ b/filesystem.c
+@@ -386,8 +386,20 @@ HgfsReadSuper(struct super_block *sb, // OUT: Superblock object
+       return PTR_ERR(si);
+    }
+    HGFS_SET_SB_TO_COMMON(sb, si);
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   result = bdi_setup_and_register(&si->bdi, "vmhgfs");
++   if (result) {
++      kfree(si->shareName);
++      kfree(si);
++   }
++#endif
++
+    sb->s_magic = HGFS_SUPER_MAGIC;
+    sb->s_op = &HgfsSuperOperations;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   sb->s_bdi = &si->bdi;
++#endif
+ 
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 38)
+    sb->s_d_op = &HgfsDentryOperations;
+@@ -427,6 +437,9 @@ HgfsReadSuper(struct super_block *sb, // OUT: Superblock object
+   exit:
+    if (result) {
+       dput(rootDentry);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++      bdi_destroy(&si->bdi);
++#endif
+       kfree(si->shareName);
+       kfree(si);
+    }
+diff --git a/module.h b/module.h
+index 76ebb14..dfa6859 100644
+--- a/module.h
++++ b/module.h
+@@ -29,6 +29,7 @@
+ #include "driver-config.h"
+ 
+ #include <asm/atomic.h>
++#include <linux/backing-dev.h>
+ #include "compat_fs.h"
+ #include "compat_semaphore.h"
+ #include "compat_slab.h"
+@@ -130,6 +131,9 @@ typedef struct HgfsSuperInfo {
+    uint32 ttl;                      /* Maximum dentry age (in ticks). */
+    char *shareName;                 /* Mounted share name. */
+    size_t shareNameLen;             /* To avoid repeated strlen() calls. */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   struct backing_dev_info bdi;
++#endif
+ } HgfsSuperInfo;
+ 
+ /*
+diff --git a/super.c b/super.c
+index 1502513..cad50d4 100644
+--- a/super.c
++++ b/super.c
+@@ -152,6 +152,9 @@ HgfsPutSuper(struct super_block *sb) // IN: The superblock
+ 
+    si = HGFS_SB_TO_COMMON(sb);
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   bdi_destroy(&si->bdi);
++#endif
+    kfree(si->shareName);
+    kfree(si);
+ }
