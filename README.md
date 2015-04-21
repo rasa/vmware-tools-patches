@@ -41,6 +41,8 @@ To build VMware Tools, do the following:
 
 With the patches applied, at least one version of VMware Tools listed [below](#tested-vmware-tools-versions), compiles successfully with the following Linux kernels:
 
+
+* [4.0.x](http://kernelnewbies.org/Linux_4.0)
 * [3.19.x](http://kernelnewbies.org/Linux_3.19)
 * [3.18.x](http://kernelnewbies.org/Linux_3.18)
 * [3.17.x](http://kernelnewbies.org/Linux_3.17)
