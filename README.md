@@ -127,7 +127,7 @@ If `apt-get` is installed on your system, the following packages will be install
 * perl
 * psmisc
 
-If `yum` is installed on your system, the following packages will be installed prior to compilation:
+If `yum` is installed on your system, the following packages will be installed when you first run [compile.sh](../../blob/master/compile.sh) or [untar-and-patch-and-compile.sh.sh](../../blob/master/untar-and-patch-and-compile.sh.sh):
 
 * gcc
 * glibc-headers 
