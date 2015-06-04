@@ -2,12 +2,13 @@ diff --git a/filesystem.c b/filesystem.c
 index 7685eb8..966b0f7 100644
 --- a/filesystem.c
 +++ b/filesystem.c
-@@ -386,8 +386,20 @@ HgfsReadSuper(struct super_block *sb, // OUT: Superblock object
+@@ -386,8 +386,21 @@ HgfsReadSuper(struct super_block *sb, // OUT: Superblock object
        return PTR_ERR(si);
     }
     HGFS_SET_SB_TO_COMMON(sb, si);
 +
 +#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   memset(&si->bdi, 0, sizeof(si->bdi));
 +   result = bdi_setup_and_register(&si->bdi, "vmhgfs");
 +   if (result) {
 +      kfree(si->shareName);
