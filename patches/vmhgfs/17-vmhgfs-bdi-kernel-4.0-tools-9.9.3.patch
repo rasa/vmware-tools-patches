@@ -1,0 +1,56 @@
+diff -ur vmhgfs-only.orig/filesystem.c vmhgfs-only/filesystem.c
+--- vmhgfs-only.orig/filesystem.c	2015-06-19 01:31:02.004555942 +0200
++++ vmhgfs-only/filesystem.c	2015-06-19 01:25:34.851824004 +0200
+@@ -398,8 +398,21 @@
+       return PTR_ERR(si);
+    }
+    HGFS_SET_SB_TO_COMMON(sb, si);
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   memset(&si->bdi, 0, sizeof(si->bdi));
++   result = bdi_setup_and_register(&si->bdi, "vmhgfs");
++   if (result) {
++      kfree(si->shareName);
++      kfree(si);
++   }
++#endif
++
+    sb->s_magic = HGFS_SUPER_MAGIC;
+    sb->s_op = &HgfsSuperOperations;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   sb->s_bdi = &si->bdi;
++#endif
+ 
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 38)
+    sb->s_d_op = &HgfsDentryOperations;
+@@ -439,6 +452,9 @@
+   exit:
+    if (result) {
+       dput(rootDentry);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++      bdi_destroy(&si->bdi);
++#endif
+       kfree(si->shareName);
+       kfree(si);
+    }
+diff -ur vmhgfs-only.orig/module.h vmhgfs-only/module.h
+--- vmhgfs-only.orig/module.h	2015-06-19 01:31:02.101559180 +0200
++++ vmhgfs-only/module.h	2015-06-19 01:29:22.536552785 +0200
+@@ -29,6 +29,7 @@
+ #include "driver-config.h"
+ 
+ #include <asm/atomic.h>
++#include <linux/backing-dev.h>
+ #include "compat_fs.h"
+ #include "compat_semaphore.h"
+ #include "compat_slab.h"
+@@ -144,6 +145,9 @@
+    char *shareName;                 /* Mounted share name. */
+    size_t shareNameLen;             /* To avoid repeated strlen() calls. */
+    uint32 mntFlags;                 /* HGFS mount flags */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)
++   struct backing_dev_info bdi;
++#endif
+ } HgfsSuperInfo;
+ 
+ /*
