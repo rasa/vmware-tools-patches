@@ -19,7 +19,7 @@ To build VMware Tools, do the following:
 3. Copy or download the version of VMware Tools you wish to use into the `vmware-tools-patches` folder. One way to do this is using [download-tools.sh](../../blob/master/download-tools.sh) and pass it the associated VMWare Fusion version number:
 	````bash
 	$ cd vmware-tools-patches
-	$ ./download-tools.sh 7.1.1
+	$ ./download-tools.sh 7.1.2
 	````
 
    It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools.
