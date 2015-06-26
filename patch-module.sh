@@ -70,7 +70,7 @@ pushd lib/modules/source >/dev/null
 					echo "*** Applying ${dir}/${base} ..."
 					patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
 				else
-					echo "*** Skipping ${dir}/${base}: did not apply cleanly"
+					echo "*** Skipping ${dir}/${base}: patch not appropriate for this kernel"
 				fi
 			done
 		fi
