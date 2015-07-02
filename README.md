@@ -116,9 +116,10 @@ or
 
 If you use [download-tools.sh](../../blob/master/download-tools.sh), to download a VMware Tools file, the script will need the following installed:
 
+* sevenzip or sudo rights
+* unzip
 * wget
 * zip
-* sevenzip or sudo rights
 
 If `apt-get` is installed on your system, the following packages will be installed when you first run [compile.sh](../../blob/master/compile.sh) or [untar-and-patch-and-compile.sh.sh](../../blob/master/untar-and-patch-and-compile.sh.sh):
 
