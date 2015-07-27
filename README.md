@@ -2,6 +2,11 @@
 
 Patch VMware Tools source code for a variety of VMware Tools and kernel versions.
 
+## Quickest Start (for those who just want to patch, FAST)
+
+A script has been provided called "patched-open-vm-tools.sh" which generally should always work, automatically invoking commands described in the following section "Quick Start"
+Before running this script, it's highly advisable to uncomment the line that verifies and if necessary installs the prerequisites for your package management system (zypper, apt, yum). Leaving this line unchecked ensures that any time your system is updated with a new kernel, the kernel will be re-patched properly.
+
 ## Quick Start
 
 To build VMware Tools, do the following:
