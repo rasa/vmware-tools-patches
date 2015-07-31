@@ -6,11 +6,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 WGET="wget --no-check-certificate"
 
-# The latest Tools should work on any platform for any post-monolithic kernel and any VMware products as described in the documentation.
-# But, if you should wish to install a different Tools version possibly targeted to a specific VMware app, you can surround the appropriate URL(s) in this section
 URLS="
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.2/2779224/packages/com.vmware.fusion.tools.linux.zip.tar
-"
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.1/2498930/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.0/2314774/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.0.1/2235595/packages/com.vmware.fusion.tools.linux.zip.tar
@@ -23,7 +20,7 @@ https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/6.0.2/1398658/packages/
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/6.0.1/1331545/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.5/1945692/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/com.vmware.fusion.tools.linux.zip.tar
-
+"
 
 # version parameter can be passed to script to indicate which tools to download
 if [[ -n "$1" ]]; then
