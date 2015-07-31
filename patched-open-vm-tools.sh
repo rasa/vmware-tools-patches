@@ -7,8 +7,8 @@
 #enable the following line for Fedora, CentOS or RHEL and comment out the zypper and apt-get commands
 # yum install gcc glibc-headers kernel-devel kernel-headers make perl git wget && \
 #
-# git clone https://github.com/rasa/vmware-tools-patches.git && \
+git clone https://github.com/rasa/vmware-tools-patches.git && \
 cd vmware-tools-patches && \
 ./download-tools.sh && \
 ./untar-and-patch.sh && \
-./compile.sh && \
+./compile.sh 
