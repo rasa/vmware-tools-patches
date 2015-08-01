@@ -4,7 +4,7 @@ set -e
 
 if [[ -n "$(type -P apt-get)" ]]; then
  # Debian and derivatives
- apt-get install git make gcc wget unzip wget zip linux-headers-$(uname -r) build-essential dkms patch perl psmisc
+ apt-get install build-essential dkms gcc git linux-headers-$(uname -r) make patch perl psmisc unzip wget zip 
 elif [[ -n "$(type -P yum)" ]]; then
  # Fedora, CentOS or RHEL and derivatives
  yum install gcc glibc-headers kernel-devel kernel-headers make perl git wget
