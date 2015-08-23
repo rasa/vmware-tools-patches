@@ -9,11 +9,9 @@ $ git clone https://github.com/rasa/vmware-tools-patches.git
 $ cd vmware-tools-patches
 $ ./patched-open-vm-tools.sh
 ````
-The above script has been provided which generally should always work, automatically invoking commands described in the following section "Quick Start"<p />
+The above script has been provided which generally should always work, automatically invoking commands described in the following section "Quick Start"
 
-Before running this script, it's highly advisable to uncomment the line(remove the leading hash) that verifies and if necessary installs the prerequisites for your package management system (zypper, apt, yum). Leaving this line active ensures that any time your system is updated with a new kernel, when you re-run this script the kernel will be re-patched properly.
-
-To update and re-patch later, remove the "vmware-tools-patches" subdirectory with the previous download and re-run the script.
+To update and re-patch later, remove the `vmware-tools-patches` subdirectory with the previous download and re-run the script.
 
 ## Quick Start
 
