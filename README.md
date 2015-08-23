@@ -4,8 +4,10 @@ Patch VMware Tools source code for a variety of VMware Tools and kernel versions
 
 ## Quickest Start (The easiest way)
 
-````
-patched-open-vm-tools.sh
+````bash
+$ git clone https://github.com/rasa/vmware-tools-patches.git
+$ cd vmware-tools-patches
+$ ./patched-open-vm-tools.sh
 ````
 The above script has been provided which generally should always work, automatically invoking commands described in the following section "Quick Start"<p />
 
