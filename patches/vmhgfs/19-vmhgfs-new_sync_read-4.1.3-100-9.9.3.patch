@@ -1,0 +1,15 @@
+--- vmhgfs-only/file.c.orig	2015-08-08 12:38:42.747777641 -0700
++++ vmhgfs-only/file.c	2015-08-08 12:39:22.588842406 -0700
+@@ -170,8 +170,10 @@
+    .flush      = HgfsFlush,
+ #if defined VMW_USE_AIO
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
+-   .read       = new_sync_read,
+-   .write      = new_sync_write,
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
++    .read       = new_sync_read,
++    .write      = new_sync_write,
++#endif // LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
+    .read_iter  = HgfsFileRead,
+    .write_iter = HgfsFileWrite,
+ #else // LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
