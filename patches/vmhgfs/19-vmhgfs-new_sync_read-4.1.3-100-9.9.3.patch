@@ -4,11 +4,9 @@
     .flush      = HgfsFlush,
  #if defined VMW_USE_AIO
  #if LINUX_VERSION_CODE >= KERNEL_VERSION(3, 16, 0)
--   .read       = new_sync_read,
--   .write      = new_sync_write,
 +#if LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
-+    .read       = new_sync_read,
-+    .write      = new_sync_write,
+    .read       = new_sync_read,
+    .write      = new_sync_write,
 +#endif // LINUX_VERSION_CODE < KERNEL_VERSION(4, 1, 0)
     .read_iter  = HgfsFileRead,
     .write_iter = HgfsFileWrite,
