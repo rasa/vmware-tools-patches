@@ -15,7 +15,7 @@ fi
 
 if [[ -e /etc/redhat-release ]]; then
 	if hash yum >/dev/null 2>&1; then
-		sudo yum -y install gcc glibc-headers kernel-devel kernel-headers make perl
+		sudo yum -y install unzip patch gcc glibc-headers kernel-devel kernel-headers make perl
 	fi
 fi
 
