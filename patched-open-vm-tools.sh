@@ -4,13 +4,13 @@ set -e
 
 if [[ -n "$(type -P apt-get)" ]]; then
  # Debian and derivatives
- apt-get install build-essential dkms gcc git linux-headers-$(uname -r) make patch perl psmisc unzip wget zip 
+ apt-get install build-essential dkms gcc git linux-headers-$(uname -r) make patch perl psmisc unzip wget zip -y 
 elif [[ -n "$(type -P yum)" ]]; then
  # Fedora, CentOS or RHEL and derivatives
- yum install gcc glibc-headers kernel-devel kernel-headers make perl git wget
+ yum -y install gcc glibc-headers kernel-devel kernel-headers make perl git wget
 elif [[ -n "$(type -P zypper)" ]]; then
  # openSUSE
- zypper in git make gcc kernel-devel patch wget
+ zypper --non-interactive install git make gcc kernel-devel patch wget
 fi
 
 git clone https://github.com/rasa/vmware-tools-patches.git
