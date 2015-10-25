@@ -30,7 +30,7 @@ To build VMware Tools, do the following:
 3. Copy or download the version of VMware Tools you wish to use into the `vmware-tools-patches` folder. One way to do this is using [download-tools.sh](../../blob/master/download-tools.sh) and pass it the associated VMWare Fusion version number:
 	````bash
 	$ cd vmware-tools-patches
-	$ ./download-tools.sh 7.1.2
+	$ ./download-tools.sh 8.0.1
 	````
 
    It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools.
@@ -76,7 +76,7 @@ We have not received any reports of the patches failing on the following kernels
 
 The included patches have been tested with the following versions of VMware Tools:
 
-
+* [VMwareTools-10.0.0-2977863.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.1/3094680/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.1)
 * [VMwareTools-10.0.0-2977863.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.0/2985594/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.0 & Workstation 12.0.0)
 * [VMwareTools-9.9.3-2759765.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.2/2779224/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.2 & Workstation 11.1.2)
 * [VMwareTools-9.9.2-2496486.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.1/2498930/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.1 & Workstation 11.1.0)
