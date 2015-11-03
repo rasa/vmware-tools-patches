@@ -15,6 +15,6 @@ fi
 
 git clone https://github.com/rasa/vmware-tools-patches.git
 cd vmware-tools-patches
-./download-tools.sh 7.1.2
+./download-tools.sh 8.0.2
 ./untar-and-patch.sh
 ./compile.sh
