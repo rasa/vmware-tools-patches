@@ -79,6 +79,7 @@ The included patches have been tested with the following versions of VMware Tool
 * [VMwareTools-10.0.1-3160059.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.2/3164312/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.2 & Workstation 12.0.1)
 * [VMwareTools-10.0.0-2977863.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.1/3094680/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.1)
 * [VMwareTools-10.0.0-2977863.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.0/2985594/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.0 & Workstation 12.0.0)
+* [VMwareTools-9.9.4-3193940.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.3/3204469/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.3 & Workstation 11.1.3)
 * [VMwareTools-9.9.3-2759765.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.2/2779224/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.2 & Workstation 11.1.2)
 * [VMwareTools-9.9.2-2496486.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.1/2498930/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.1 & Workstation 11.1.0)
 * [VMwareTools-9.9.0-2304977.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/7.1.0/2314774/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 7.1.0 & Workstation 11.0.0)
