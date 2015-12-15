@@ -33,6 +33,6 @@ fi
 
 pushd vmware-tools-distrib >/dev/null
 
-  sudo ./vmware-install.pl -d ${VMWARE_INSTALL_OPTIONS}
+sudo ./vmware-install.pl --default --force-install ${VMWARE_INSTALL_OPTIONS}
 
 popd >/dev/null
