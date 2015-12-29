@@ -16,6 +16,6 @@ fi
 
 if [[ -e /etc/arch-release ]]; then
 	if hash pacman >/dev/null 2>&1; then
-		sudo pacman -Syu --noconfirm wget unzip patch gcc glibc linux-headers make perl
+		sudo pacman -Syu --needed --noconfirm wget unzip patch gcc glibc linux-headers make perl
 	fi
 fi
