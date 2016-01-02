@@ -1,4 +1,6 @@
 #!/bin/bash
+# This file can be grabbed via wget/curl to bootstrap the repo
+# A really handy place to use this bootstrap would be Packer
 
 set -e
 
@@ -11,10 +13,17 @@ elif [[ -n "$(type -P yum)" ]]; then
 elif [[ -n "$(type -P zypper)" ]]; then
  # openSUSE
  zypper --non-interactive install git make gcc kernel-devel patch wget
+elif [[ -n "$(type -P pacman )" ]]; then
+ pacman -S --needed --noconfirm base base-devel git linux-headers perl
 fi
 
 git clone https://github.com/rasa/vmware-tools-patches.git
 cd vmware-tools-patches
+
+# Sourcing the setup script gets the dependencies we really need,
+# so that we don't have to lay them all out here and we could uninstall them
+# when we are done with them post compile
+. setup.sh
 ./download-tools.sh 8.1.0
 ./untar-and-patch.sh
 ./compile.sh
