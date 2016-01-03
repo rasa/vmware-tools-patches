@@ -33,4 +33,5 @@ popd >/dev/null
 if hash systemctl >/dev/null 2>&1; then
   sudo cp $SCRIPT_DIR/patches/vmware-tools.service /etc/systemd/system/
   sudo systemctl enable vmware-tools.service
+  echo "Added and enabled VMware Tools systemd service"
 fi
