@@ -1,0 +1,25 @@
+--- bin/vmware-config-tools.pl	2015-11-11 00:53:30.000000000 -0600
++++ bin/vmware-config-tools.pl	2015-12-29 13:41:58.938067500 -0600
+@@ -3226,7 +3226,7 @@
+                     'killall', 'perl', 'mv', 'touch', 'hostname', 'pidof');
+   } else {
+     @programList = ('cp', 'uname', 'grep', 'ldd', 'mknod', 'depmod', 'insmod',
+-                    'lsmod', 'modprobe', 'mv', 'rmmod', 'ifconfig', 'rm',
++                    'lsmod', 'modprobe', 'mv', 'rmmod', 'ip', 'rm',
+ 		    'tar', 'modinfo');
+   }
+ 
+@@ -10498,10 +10498,11 @@
+   # Get the list of available ethernet interfaces
+   # The -a is important because it lists all interfaces (not only those
+   # which are up).  The vmnet driver knows how to deal with down interfaces.
+-  open(IFCONFIG, 'LC_ALL=C ' . shell_string($gHelper{'ifconfig'}) . ' -a |');
++  open(IFCONFIG, 'LC_ALL=C ' . shell_string($gHelper{'ip'}) . ' -o link |');
+   @gAllEthIf = ();
+   while (<IFCONFIG>) {
+-    if (/^(\S+)\s+Link encap:Ethernet/) {
++    my $pattern = '^\d+\:\s([a-zA-Z0-9]+).*(link\/ether)';
++    if (/$pattern/) {
+       my @fields;
+ 
+       @fields = split(/[ ]+/);
