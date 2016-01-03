@@ -27,6 +27,28 @@ pushd vmware-tools-distrib >/dev/null
 			"${SCRIPT_DIR}/patch-module.sh" "${module}"
 		done
 	fi
+# Currently this should only match one patch which adds support for ip instead of ifconfig
+if hash ip >/dev/null 2>&1; then
+  patches="$(find ${SCRIPT_DIR}/patches -mindepth 0 -maxdepth 0 -type f)"
+  echo $patches
+    if [[ -n "${patches}" ]]; then
+      for patch in ${patches}; do
+        pushd bin >/dev/null
+        base="$(basename ${patch})"
+        echo "\$base is" + $base
+        dir="$(basename $(dirname ${patch}))"
+        echo "\$dir is" + $dir
+        patch --batch --ignore-whitespace --strip=1 --dry-run < "${patch}" >$base.patch.err 2>&1
+        if [ $? -eq 0 ]; then
+          rm $base.patch.err
+          echo "*** Applying ${dir}/${base} ..."
+          patch --batch --ignore-whitespace --strip=1 --backup < "${patch}"
+        else
+          echo "*** Skipping ${dir}/${base}: patch not appropriate for this kernel"
+        fi
+      done
+    fi
+fi
 
 popd >/dev/null
 
