@@ -3,8 +3,6 @@ Description=VMWare Tools Service
 After=network.target
 
 [Service]
-Type=simple
-Group=wheels
 ExecStart=/etc/init.d/vmware-tools start
 ExecStop=/etc/init.d/vmware-tools stop
 PIDFile=/var/lock/subsys/vmware-tools
