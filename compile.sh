@@ -33,6 +33,10 @@ fi
 
 pushd vmware-tools-distrib >/dev/null
 
-sudo ./vmware-install.pl --default --force-install ${VMWARE_INSTALL_OPTIONS}
+if sudo ./vmware-install.pl --help 2>&1 | grep -q 'force-install'; then
+    VMWARE_INSTALL_OPTIONS="--force-install ${VMWARE_INSTALL_OPTIONS}"
+fi
+
+sudo ./vmware-install.pl --default ${VMWARE_INSTALL_OPTIONS}
 
 popd >/dev/null
