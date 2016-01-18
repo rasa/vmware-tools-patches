@@ -7,7 +7,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 tool="$1"
 
 if [[ -z "${tool}" ]]; then
-  tool="$(find -type f -name 'VMwareTools-*.tar.gz' | sort -nr | head -n 1)"
+  tool="$(find -type f -name 'VMwareTools-*.tar.gz' | sort -nr -t - -k 2 | head -n 1)"
 fi
 
 if [[ -z "${tool}" ]]; then
