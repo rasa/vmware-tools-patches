@@ -25,6 +25,6 @@ cd vmware-tools-patches
 # so that we don't have to lay them all out here and we could uninstall them
 # when we are done with them post compile
 . ./setup.sh
-./download-tools.sh 8.1.0
+./download-tools.sh latest
 ./untar-and-patch.sh
 ./compile.sh
