@@ -31,8 +31,9 @@ https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/
 if [[ -n "$1" ]]; then
 	if [[ "$1" = "latest" ]]; then
 		URLS=$(echo "$URLS" | head -n 1)
+	else
+		URLS=$(echo "$URLS" | grep "/$1/")
 	fi
-	URLS=$(echo "$URLS" | grep "/$1/")
 fi
 
 SEVENZIP=$(which 7z 2>/dev/null)
