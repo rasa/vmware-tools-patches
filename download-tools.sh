@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 WGET="wget --no-check-certificate"
 
-URLS="
+URLS="\
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.1.0/3272237/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.2/3164312/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.1/3094680/packages/com.vmware.fusion.tools.linux.zip.tar
@@ -29,7 +29,10 @@ https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/5.0.4/1435862/packages/
 
 # version parameter can be passed to script to indicate which tools to download
 if [[ -n "$1" ]]; then
-	URLS=$(echo "$URLS" | grep "$1")
+	if [[ "$1" = "latest" ]]; then
+		URLS=$(echo "$URLS" | head -n 1)
+	fi
+	URLS=$(echo "$URLS" | grep "/$1/")
 fi
 
 SEVENZIP=$(which 7z 2>/dev/null)
