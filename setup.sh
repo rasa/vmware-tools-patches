@@ -52,7 +52,7 @@ fi
 
 if [[ -e /etc/SuSE-release ]]; then
 	if hash zypper >/dev/null 2>&1; then
-   zypper --non-interactive install \
+		sudo zypper --non-interactive install \
                     make \
                     gcc \
                     kernel-devel \
