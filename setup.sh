@@ -57,6 +57,7 @@ if [[ -e /etc/SuSE-release ]]; then
                     gcc \
                     kernel-devel \
                     patch \
-                    wget
+                    wget \
+                    unzip
 	fi
 fi
