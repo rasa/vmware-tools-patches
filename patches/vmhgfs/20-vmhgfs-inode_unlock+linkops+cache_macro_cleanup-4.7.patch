@@ -1,0 +1,444 @@
+diff -Naur vmhgfs-only/dir.c vmhgfs-only.mod/dir.c
+--- vmhgfs-only/dir.c	2016-09-13 15:38:30.917959075 -0400
++++ vmhgfs-only.mod/dir.c	2016-09-13 15:39:08.201291316 -0400
+@@ -707,18 +707,22 @@
+ {
+    struct dentry *dentry = DENTRY(file);
+    struct inode *inode = dentry->d_inode;
+-   compat_mutex_t *mtx;
+ 
+    LOG(4, (KERN_DEBUG "Got llseek call with origin = %d, offset = %u,"
+            "pos = %u\n", origin, (uint32)offset, (uint32)file->f_pos));
+ 
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 16)
++   compat_mutex_t *mtx;
+    mtx = &inode->i_sem;
+-#else
++#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0)
+    mtx = &inode->i_mutex;
+ #endif
+-
++   
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 7, 0)
++   inode_lock(d_inode(dentry));
++#else
+    compat_mutex_lock(mtx);
++#endif
+ 
+    switch(origin) {
+ 
+@@ -763,7 +767,17 @@
+    }
+ 
+ out:
++   
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 7, 0)
++   inode_unlock(d_inode(dentry));
++#else
+    compat_mutex_unlock(mtx);
++#endif
++
++
++
++   
++
+    return offset;
+ }
+ 
+diff -Naur vmhgfs-only/inode.c vmhgfs-only.mod/inode.c
+--- vmhgfs-only/inode.c	2016-09-13 15:38:30.917959075 -0400
++++ vmhgfs-only.mod/inode.c	2016-09-13 15:39:08.201291316 -0400
+@@ -945,8 +945,8 @@
+                   loff_t newSize)      // IN: New size of the file
+ {
+    int result;
+-   pgoff_t pageIndex = newSize >> PAGE_CACHE_SHIFT;
+-   unsigned pageOffset = newSize & (PAGE_CACHE_SIZE - 1);
++   pgoff_t pageIndex = newSize >> PAGE_SHIFT;
++   unsigned pageOffset = newSize & (PAGE_SIZE - 1);
+    struct page *page;
+    char *buffer;
+ 
+@@ -986,10 +986,10 @@
+       return -ENOMEM;
+    }
+    buffer = kmap(page);
+-   memset(buffer + pageOffset, 0, PAGE_CACHE_SIZE - pageOffset);
++   memset(buffer + pageOffset, 0, PAGE_SIZE - pageOffset);
+    flush_dcache_page(page);
+    kunmap(page);
+-   page_cache_release(page);
++   put_page(page);
+    compat_unlock_page(page);
+    return 0;
+ }
+diff -Naur vmhgfs-only/link.c vmhgfs-only.mod/link.c
+--- vmhgfs-only/link.c	2016-09-13 15:38:30.917959075 -0400
++++ vmhgfs-only.mod/link.c	2016-09-13 15:39:08.201291316 -0400
+@@ -35,7 +35,10 @@
+ #include "vm_assert.h"
+ 
+ /* HGFS symlink operations. */
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 2, 0)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0)
++static const char *HgfsGetlink(struct dentry *dentry, struct inode *inode,
++                               struct delayed_call *done);
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4, 2, 0)
+ static const char *HgfsFollowlink(struct dentry *dentry,
+                                   void **cookie);
+ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 13)
+@@ -61,11 +64,94 @@
+ #endif
+ 
+ /* HGFS inode operations structure for symlinks. */
++
++/* 
++The API for follow_link was changed to get_link in Linux 4.5 
++follow_link became get_link and put_link was deprecated.
++We can simulate putlink behavior by passing the destructor    
++*/
++
+ struct inode_operations HgfsLinkInodeOperations = {
+-   .follow_link   = HgfsFollowlink,
+    .readlink      = HgfsReadlink,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0)
++   .get_link      =  HgfsGetlink,
++};   
++#elif LINUX_VERSION_CODE >= KERNEL_VERSION(4, 2, 0) /* this may need to be fixed on 4.2 ~ 4.6 */
++   .follow_link   = HgfsFollowlink,
++   .put_link      = HgfsPutlink,
++};   
++#else
++   .follow_link   = HgfsFollowlink,
+    .put_link      = HgfsPutlink,
+ };
++#endif
++
++/*
++ *----------------------------------------------------------------------
++ *
++ * HgfsGetlink --
++ *
++ *    Modeled after nfs_follow_link from a 2.4 kernel. Modified HgfsFollowLink
++ *    to work on Linux >= 4.5
++ *
++ * Results:
++ *    Returns zero on success, negative error on failure.
++ *
++ *    The error is returned as void *.
++ *    
++ *
++ * Side effects:
++ *    None
++ *
++ *----------------------------------------------------------------------
++ */
++
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0)
++static const char *HgfsGetlink(struct dentry *dentry, struct inode *inode,
++                               struct delayed_call *done)
++{
++
++   HgfsAttrInfo attr;
++   char *fileName = NULL;
++   int error;
++
++   ASSERT(dentry);
++
++   if (!dentry) {
++      LOG(4, (KERN_DEBUG "VMware hgfs: HgfsFGetlink: null input\n"));
++      error = -EINVAL;
++      goto out;
++   }
++
++   LOG(6, (KERN_DEBUG "VMware hgfs: %s: calling HgfsPrivateGetattr %s\n",
++           __func__, dentry->d_name.name));
++   error = HgfsPrivateGetattr(dentry, &attr, &fileName);
++   LOG(6, (KERN_DEBUG "VMware hgfs: %s: HgfsPrivateGetattr %s ret %d\n",
++           __func__, dentry->d_name.name, error));
++   if (!error) {
++
++      /* Let's make sure we got called on a symlink. */
++      if (attr.type != HGFS_FILE_TYPE_SYMLINK || fileName == NULL) {
++         LOG(6, (KERN_DEBUG "VMware hgfs: HgfsFollowlink: got called "
++                 "on something that wasn't a symlink\n"));
++         error = -EINVAL;
++         kfree(fileName);
++      } else {
++         LOG(6, (KERN_DEBUG "VMware hgfs: %s: calling nd_set_link %s\n",
++                 __func__, fileName));
++      }
++   }
++
++out:
++   if (!error) {
++      set_delayed_call(done, kfree_link, fileName);
++      return fileName;
++   } else {
++      return ERR_PTR(error);
++   }
++
++}
++#endif
+ 
+ /*
+  * HGFS symlink operations.
+diff -Naur vmhgfs-only/page.c vmhgfs-only.mod/page.c
+--- vmhgfs-only/page.c	2016-09-13 15:38:30.917959075 -0400
++++ vmhgfs-only.mod/page.c	2016-09-13 15:39:08.201291316 -0400
+@@ -166,7 +166,7 @@
+ typedef struct HgfsWbPage {
+    struct list_head        wb_list;        /* Defines state of page: */
+    struct page             *wb_page;       /* page to read in/write out */
+-   pgoff_t                 wb_index;       /* Offset >> PAGE_CACHE_SHIFT */
++   pgoff_t                 wb_index;       /* Offset >> PAGE_SHIFT */
+    struct kref             wb_kref;        /* reference count */
+    unsigned long           wb_flags;
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 13)
+@@ -598,7 +598,7 @@
+  * HgfsDoReadpage --
+  *
+  *    Reads in a single page, using the specified handle and page offsets.
+- *    At the time of writing, HGFS_IO_MAX == PAGE_CACHE_SIZE, so we could
++ *    At the time of writing, HGFS_IO_MAX == PAGE_SIZE, so we could
+  *    avoid the do {} while() and just read the page as is, but in case the
+  *    above assumption is ever broken, it's nice that this will continue to
+  *    "just work".
+@@ -619,7 +619,7 @@
+                unsigned pageTo)    // IN:     Where to stop reading
+ {
+    int result = 0;
+-   loff_t curOffset = ((loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_CACHE_SHIFT) + pageFrom;
++   loff_t curOffset = ((loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_SHIFT) + pageFrom;
+    size_t nextCount, remainingCount = pageTo - pageFrom;
+    HgfsDataPacket dataPacket[1];
+ 
+@@ -683,7 +683,7 @@
+  * HgfsDoWritepageInt --
+  *
+  *    Writes out a single page, using the specified handle and page offsets.
+- *    At the time of writing, HGFS_IO_MAX == PAGE_CACHE_SIZE, so we could
++ *    At the time of writing, HGFS_IO_MAX == PAGE_SIZE, so we could
+  *    avoid the do {} while() and just write the page as is, but in case the
+  *    above assumption is ever broken, it's nice that this will continue to
+  *    "just work".
+@@ -704,7 +704,7 @@
+                    unsigned pageTo)    // IN: Ending page offset
+ {
+    int result = 0;
+-   loff_t curOffset = ((loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_CACHE_SHIFT) + pageFrom;
++   loff_t curOffset = ((loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_SHIFT) + pageFrom;
+    size_t nextCount;
+    size_t remainingCount = pageTo - pageFrom;
+    struct inode *inode;
+@@ -756,7 +756,7 @@
+  * HgfsDoWritepage --
+  *
+  *    Writes out a single page, using the specified handle and page offsets.
+- *    At the time of writing, HGFS_IO_MAX == PAGE_CACHE_SIZE, so we could
++ *    At the time of writing, HGFS_IO_MAX == PAGE_SIZE, so we could
+  *    avoid the do {} while() and just write the page as is, but in case the
+  *    above assumption is ever broken, it's nice that this will continue to
+  *    "just work".
+@@ -852,9 +852,9 @@
+    LOG(6, (KERN_WARNING "VMware hgfs: %s: reading from handle %u\n",
+            __func__, handle));
+ 
+-   page_cache_get(page);
+-   result = HgfsDoReadpage(handle, page, 0, PAGE_CACHE_SIZE);
+-   page_cache_release(page);
++   get_page(page);
++   result = HgfsDoReadpage(handle, page, 0, PAGE_SIZE);
++   put_page(page);
+    return result;
+ }
+ 
+@@ -889,7 +889,7 @@
+    pgoff_t lastPageIndex;
+    pgoff_t pageIndex;
+    loff_t currentFileSize;
+-   unsigned to = PAGE_CACHE_SIZE;
++   unsigned to = PAGE_SIZE;
+ 
+    ASSERT(page);
+    ASSERT(page->mapping);
+@@ -909,8 +909,8 @@
+    /*
+     * We were given an entire page to write. In most cases this means "start
+     * writing from the beginning of the page (byte 0) to the very end (byte
+-    * PAGE_CACHE_SIZE). But what if this is the last page of the file? Then
+-    * we don't want to write a full PAGE_CACHE_SIZE bytes, but just however
++    * PAGE_SIZE). But what if this is the last page of the file? Then
++    * we don't want to write a full PAGE_SIZE bytes, but just however
+     * many bytes may remain in the page.
+     *
+     * XXX: Other filesystems check the page index to make sure that the page
+@@ -919,14 +919,14 @@
+     * ourselves here after a truncate(), we can drop the write.
+     */
+    currentFileSize = compat_i_size_read(inode);
+-   lastPageIndex = currentFileSize >> PAGE_CACHE_SHIFT;
++   lastPageIndex = currentFileSize >> PAGE_SHIFT;
+    pageIndex = HGFS_PAGE_FILE_INDEX(page);
+    LOG(4, (KERN_WARNING "VMware hgfs: %s: file size lpi %lu pi %lu\n",
+            __func__, lastPageIndex, pageIndex));
+    if (pageIndex > lastPageIndex) {
+       goto exit;
+    } else if (pageIndex == lastPageIndex) {
+-      to = currentFileSize & (PAGE_CACHE_SIZE - 1);
++      to = currentFileSize & (PAGE_SIZE - 1);
+       if (to == 0) {
+          goto exit;
+       }
+@@ -939,7 +939,7 @@
+     * Documentation/filesystems/Locking in the kernel to see what rules we
+     * must obey.
+     *
+-    * Firstly, we acquire a reference to the page via page_cache_get() and call
++    * Firstly, we acquire a reference to the page via get_page() and call
+     * compat_set_page_writeback(). The latter does a number of things: it sets
+     * the writeback bit on the page, and if it wasn't already set, it sets the
+     * writeback bit in the radix tree. Then, if the page isn't dirty, it clears
+@@ -956,11 +956,11 @@
+     * regardless of whether we wrote anything, as the VFS locked the page for
+     * us.
+     */
+-   page_cache_get(page);
++   get_page(page);
+    compat_set_page_writeback(page);
+    result = HgfsDoWritepage(handle, page, 0, to);
+    compat_end_page_writeback(page);
+-   page_cache_release(page);
++   put_page(page);
+ 
+   exit:
+    compat_unlock_page(page);
+@@ -997,7 +997,7 @@
+    ASSERT(page);
+ 
+    LOG(6, (KERN_DEBUG "VMware hgfs: %s: off %Lu: %u to %u\n", __func__,
+-           (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_CACHE_SHIFT, pageFrom, pageTo));
++           (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_SHIFT, pageFrom, pageTo));
+ 
+    if (canRetry && HgfsCheckReadModifyWrite(file, page, pageFrom, pageTo)) {
+       HgfsHandle readHandle;
+@@ -1013,7 +1013,7 @@
+           * If it fails the page will not be set up to date and the write end will write
+           * the data out immediately (synchronously effectively).
+           */
+-         result = HgfsDoReadpage(readHandle, page, 0, PAGE_CACHE_SIZE);
++         result = HgfsDoReadpage(readHandle, page, 0, PAGE_SIZE);
+          *doRetry = TRUE;
+       }
+       LOG(6, (KERN_DEBUG "VMware hgfs: %s: HgfsReadpage result %d\n", __func__, result));
+@@ -1085,8 +1085,8 @@
+                struct page **pagePtr,         // OUT: Locked page
+                void **clientData)             // OUT: Opaque to pass to write_end, unused
+ {
+-   pgoff_t index = pos >> PAGE_CACHE_SHIFT;
+-   unsigned pageFrom = pos & (PAGE_CACHE_SIZE - 1);
++   pgoff_t index = pos >> PAGE_SHIFT;
++   unsigned pageFrom = pos & (PAGE_SIZE - 1);
+    unsigned pageTo = pageFrom + len;
+    struct page *page;
+    int result;
+@@ -1108,14 +1108,14 @@
+ 
+       LOG(6, (KERN_DEBUG "VMware hgfs: %s: file size %Lu @ %Lu page %u to %u\n", __func__,
+             (loff_t)compat_i_size_read(page->mapping->host),
+-            (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_CACHE_SHIFT,
++            (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_SHIFT,
+             pageFrom, pageTo));
+ 
+       result = HgfsDoWriteBegin(file, page, pageFrom, pageTo, canRetry, &doRetry);
+       ASSERT(result == 0);
+       canRetry = FALSE;
+       if (doRetry) {
+-         page_cache_release(page);
++         put_page(page);
+       }
+    } while (doRetry);
+ 
+@@ -1252,12 +1252,12 @@
+    currentFileSize = compat_i_size_read(page->mapping->host);
+    if (currentFileSize > 0) {
+       pgoff_t pageIndex = HGFS_PAGE_FILE_INDEX(page);
+-      pgoff_t fileSizeIndex = (currentFileSize - 1) >> PAGE_CACHE_SHIFT;
++      pgoff_t fileSizeIndex = (currentFileSize - 1) >> PAGE_SHIFT;
+ 
+       if (pageIndex < fileSizeIndex) {
+-         pageLength = PAGE_CACHE_SIZE;
++         pageLength = PAGE_SIZE;
+       } else if (pageIndex == fileSizeIndex) {
+-         pageLength = ((currentFileSize - 1) & ~PAGE_CACHE_MASK) + 1;
++         pageLength = ((currentFileSize - 1) & ~PAGE_MASK) + 1;
+       }
+    }
+ 
+@@ -1312,18 +1312,18 @@
+ 
+       if (pageLength == 0) {
+          /* No file valid data in this page. Zero unwritten segments only. */
+-         HgfsZeroUserSegments(page, 0, pageFrom, pageTo, PAGE_CACHE_SIZE);
++         HgfsZeroUserSegments(page, 0, pageFrom, pageTo, PAGE_SIZE);
+          SetPageUptodate(page);
+       } else if (pageTo >= pageLength) {
+          /* Some file valid data in this page. Zero unwritten segments only. */
+-         HgfsZeroUserSegment(page, pageTo, PAGE_CACHE_SIZE);
++         HgfsZeroUserSegment(page, pageTo, PAGE_SIZE);
+          if (pageTo == 0) {
+             /* Overwritten all file valid data in this page. So the page is uptodate. */
+             SetPageUptodate(page);
+          }
+       } else {
+          /* Overwriting part of the valid file data. */
+-         HgfsZeroUserSegment(page, pageLength, PAGE_CACHE_SIZE);
++         HgfsZeroUserSegment(page, pageLength, PAGE_SIZE);
+       }
+    }
+ 
+@@ -1388,7 +1388,7 @@
+    ASSERT(page);
+    ASSERT(file);
+ 
+-   offset = (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_CACHE_SHIFT;
++   offset = (loff_t)HGFS_PAGE_FILE_INDEX(page) << PAGE_SHIFT;
+    writeTo = offset + pageTo;
+    copied = pageTo - pageFrom;
+ 
+@@ -1430,7 +1430,7 @@
+              struct page *page,              // IN: Page to write from
+              void *clientData)               // IN: From write_begin, unused.
+ {
+-   unsigned pageFrom = pos & (PAGE_CACHE_SIZE - 1);
++   unsigned pageFrom = pos & (PAGE_SIZE - 1);
+    unsigned pageTo = pageFrom + len;
+    loff_t writeTo = pos + copied;
+    int ret;
+@@ -1455,7 +1455,7 @@
+    }
+ 
+    compat_unlock_page(page);
+-   page_cache_release(page);
++   put_page(page);
+    LOG(6, (KERN_WARNING "VMware hgfs: %s: return %d\n", __func__, ret));
+    return ret;
+ }
+@@ -1825,7 +1825,7 @@
+    INIT_LIST_HEAD(&wbReq->wb_list);
+    wbReq->wb_page    = page;
+    wbReq->wb_index   = HGFS_PAGE_FILE_INDEX(page);
+-   page_cache_get(page);
++   get_page(page);
+    kref_init(&wbReq->wb_kref);
+ 
+ exit:
+@@ -1861,7 +1861,7 @@
+           __func__, req, req->wb_page));
+ 
+    if (page != NULL) {
+-      page_cache_release(page);
++      put_page(page);
+       req->wb_page = NULL;
+    }
+ }
