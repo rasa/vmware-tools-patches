@@ -15,6 +15,7 @@ diff -Naur vmhgfs-only/dir.c vmhgfs-only.mod/dir.c
     mtx = &inode->i_sem;
 -#else
 +#elif LINUX_VERSION_CODE < KERNEL_VERSION(4, 7, 0)
++   compat_mutex_t *mtx;
     mtx = &inode->i_mutex;
  #endif
 -
