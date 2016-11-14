@@ -76,7 +76,7 @@ We have not received any reports of the patches failing on the following kernels
 
 The included patches have been tested with the following versions of VMware Tools:
 
-* [VMwareTools-10.0.10-4301679.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.0/4352717/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.5.0/1 & Workstation 12.5.0/1)
+* [VMwareTools-10.0.10-4301679.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.0/4352717/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.5.0/1/2 & Workstation 12.5.0/1/2)
 * [VMwareTools-10.0.6-3595377.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.1.1/3771013/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.1.1 & Workstation 12.1.1)
 * [VMwareTools-10.0.5-3228253.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.1.0/3272237/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.1.0 & Workstation 12.1.0)
 * [VMwareTools-10.0.1-3160059.tar.gz](https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.0.2/3164312/packages/com.vmware.fusion.tools.linux.zip.tar) (VMware Fusion 8.0.2 & Workstation 12.0.1)
