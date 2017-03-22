@@ -7,6 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WGET="wget --no-check-certificate"
 
 URLS="\
+https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.4/5115894/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.3/4696910/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.2/4635224/packages/com.vmware.fusion.tools.linux.zip.tar
 https://softwareupdate.vmware.com/cds/vmw-desktop/fusion/8.5.1/4543325/packages/com.vmware.fusion.tools.linux.zip.tar
