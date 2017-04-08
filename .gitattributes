@@ -1,0 +1,7 @@
+# Detect text files automatically
+* text=auto eol=lf
+
+# Force CRLF line endings on these files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.aspx -text
