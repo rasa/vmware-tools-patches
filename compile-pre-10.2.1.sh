@@ -13,6 +13,9 @@ if hash vmware-uninstall-tools.pl >/dev/null 2>&1; then
   sudo vmware-uninstall-tools.pl
 fi
 
+
+VMWARE_INSTALL_OPTIONS="--clobber-kernel-modules=pvscsi,vmblock,vmci,vmhgfs,vmmemctl,vmsync,vmxnet,vmxnet3,vsock"
+
 if [[ -n "$1" ]]; then
 	VMWARE_INSTALL_OPTIONS="$1"
 fi
@@ -28,12 +31,9 @@ if hash systemctl >/dev/null 2>&1; then
 fi
 
 if sudo ./vmware-install.pl --help 2>&1 | grep -q 'force-install'; then
-    VMWARE_INSTALL_OPTIONS="--force-install"
+    VMWARE_INSTALL_OPTIONS="--force-install ${VMWARE_INSTALL_OPTIONS}"
 fi
 
-sudo ./vmware-install.pl --default $VMWARE_INSTALL_OPTIONS
-sudo ./bin/vmware-config-tools.pl --default
+sudo ./vmware-install.pl --default ${VMWARE_INSTALL_OPTIONS}
 
 popd >/dev/null
-
-
