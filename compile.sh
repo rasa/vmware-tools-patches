@@ -31,10 +31,10 @@ if hash systemctl >/dev/null 2>&1; then
 fi
 
 if sudo ./vmware-install.pl --help 2>&1 | grep -q 'force-install'; then
-    VMWARE_INSTALL_OPTIONS="--force-install ${VMWARE_INSTALL_OPTIONS}"
+    VMWARE_INSTALL_OPTIONS="--force-install"
 fi
 
-sudo ./vmware-install.pl --default ${VMWARE_INSTALL_OPTIONS}
+sudo ./vmware-install.pl --default
 
 popd >/dev/null
 
