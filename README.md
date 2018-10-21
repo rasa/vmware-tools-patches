@@ -4,11 +4,11 @@ Patch VMware Tools source code for a variety of VMware Tools and kernel versions
 
 ## Quickest Start (The easiest way)
 
-````bash
+```bash
 $ git clone https://github.com/rasa/vmware-tools-patches.git
 $ cd vmware-tools-patches
 $ ./patched-open-vm-tools.sh
-````
+```
 The above script has been provided which generally should always work, automatically invoking commands described in the following section "Quick Start"
 
 To update and re-patch later, remove the `vmware-tools-patches` subdirectory with the previous download and re-run the script.
@@ -18,35 +18,35 @@ To update and re-patch later, remove the `vmware-tools-patches` subdirectory wit
 To build VMware Tools, do the following:
 
 1. Checkout the repository:
-	````bash
+	```bash
 	$ git clone https://github.com/rasa/vmware-tools-patches.git
-	````
+	```
 
 2. *(Optional)* Copy your patch(es) into the appropriate directory in the `patches` directory. Patches must end in `.patch`, or `.diff` and be [properly formatted](#required-patch-format). For example:
-	````bash
+	```bash
 	$ cp great-new.patch vmware-tools-patches/patches/vmhgfs
-	````
+	```
 
 3. Copy or download the version of VMware Tools you wish to use into the `vmware-tools-patches` folder. One way to do this is using [download-tools.sh](../../blob/master/download-tools.sh) and pass it the associated VMWare Fusion version number:
-	````bash
+	```bash
 	$ cd vmware-tools-patches
 	$ ./download-tools.sh latest
-	````
+	```
 
    It is strongly suggested to use the [latest version](#tested-vmware-tools-versions) of VMware Tools.
 
    VMware Tools is also included inside the `linux.iso` file that is shipped with VMware Fusion, Player, and Workstation. 
 
 4. Untar the tarball, and apply the patches:
-	````bash
+	```bash
 	$ cd vmware-tools-patches
 	$ ./untar-and-patch.sh
-	````
+	```
 
 5. Run the `vmware-install.pl` installer to install VMware Tools:
-	````bash
+	```bash
 	$ ./compile.sh
-	````
+	```
 
 ## Tested Kernels
 
